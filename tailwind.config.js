@@ -33,7 +33,7 @@ export const theme = {
       montserrat: ['"Montserrat", "Poppins", sans-serif'],
       poppins: ['"Poppins", "Montserrat", sans-serif'],
       noto: ['"Noto Sans", sans-serif'],
-      rale: ['"Raleway", "Poppins", sans-serif'],
+      rale: ['"Raleway", serif'],
     },
   },
 };
