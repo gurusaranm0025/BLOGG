@@ -1,4 +1,5 @@
 import "./globals.css";
+import Providers from "@/common/ContextProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -20,7 +21,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <Providers>
+        <body>{children}</body>
+      </Providers>
     </html>
   );
 }

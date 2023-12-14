@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
-function Input({ type, placeholder, name, id, value, icon }) {
+function Input({ type, placeholder, name, id, value, icon, onChange }) {
   const [passVisibility, setPassVisibilty] = useState(false);
 
   function visibilityHandler() {
@@ -27,6 +27,7 @@ function Input({ type, placeholder, name, id, value, icon }) {
         type={
           type == "password" ? (passVisibility ? "text" : "password") : "text"
         }
+        onChange={onChange}
         placeholder={placeholder}
         name={name}
         id={id}
