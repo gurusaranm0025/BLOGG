@@ -6,7 +6,7 @@ import maria from "@/public/maria_back.jpg";
 import Input from "@/components/signMethod/Input";
 import google from "@/public/google.svg";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { credValidityCheck } from "@/server/serverActions";
+import { credValidityCheck, googleAuth } from "@/server/serverActions";
 import { useContext, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
@@ -40,36 +40,6 @@ function page({ params }) {
 
     if (credResult.status != 200) console.log(credResult);
 
-    if (credResult.status == "befSub") {
-      if (credResult.error == "username") {
-        toast.error(
-          "Enter username with a minimum of 4 characters to continue."
-        );
-      }
-
-      if (credResult.error == "email") {
-        toast.error("Email is invalid.");
-      }
-      if (credResult.error == "password") {
-        toast.error(
-          "Password is invalid. Password must be 6 to 20 characters long with numbers and 1 lowercase and 1 uppercase letters."
-        );
-      }
-    }
-
-    if (credResult.status == 403) {
-      toast.error("Email already exists.");
-    }
-
-    //signin errors
-    if (credResult.status == 404) {
-      toast.error("Email not found.");
-    }
-
-    if (credResult.status == 405) {
-      toast.error("Password is wrong");
-    }
-
     if (credResult.status == 500) {
       toast.error("Sorry, an error occurred on our end");
       console.log(credResult.error);
@@ -80,6 +50,8 @@ function page({ params }) {
       toast.success("Success");
       storeInSession("user", JSON.stringify(credResult));
       setUserAuth(credResult);
+    } else {
+      toast.error(credResult.error);
     }
   }
 
@@ -88,7 +60,16 @@ function page({ params }) {
   function handleGoogleAuth(e) {
     e.preventDefault();
     authWithGoogle()
-      .then((user) => console.log(user))
+      .then(async (user) => {
+        const credResult = await googleAuth((access_token = user.accessToken));
+        console.log(credResult);
+        if (credResult.status == 200) {
+          storeInSession("user", JSON.stringify(credResult));
+          setUserAuth(credResult);
+        } else {
+          toast.error(credResult.error);
+        }
+      })
       .catch((err) => {
         toast.error("Trouble logging through google");
         return console.log(err);
