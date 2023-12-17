@@ -16,7 +16,7 @@ function page() {
 
   return (
     <div>
-      {access_token === null ? router.push("/signin") : <p>Success</p>}
+      {access_token === null ? router.push("/signin") : ""}
       {editorState === "editor" ? <BlogEditor /> : <PublishForm />}
     </div>
   );
