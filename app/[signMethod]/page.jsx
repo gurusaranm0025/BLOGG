@@ -12,6 +12,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
 import { UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
+import { authWithGoogle } from "@/common/firebase";
 
 function page({ params }) {
   const router = useRouter();
@@ -83,6 +84,16 @@ function page({ params }) {
   }
 
   access_token && router.push("/");
+
+  function handleGoogleAuth(e) {
+    e.preventDefault();
+    authWithGoogle()
+      .then((user) => console.log(user))
+      .catch((err) => {
+        toast.error("Trouble logging through google");
+        return console.log(err);
+      });
+  }
   return (
     <AnimationWrapper className="h-full">
       <div className="flex h-full w-full">
@@ -149,7 +160,10 @@ function page({ params }) {
               <hr className="w-1/2 border-black" />
             </div>
 
-            <button className="center outline-none hover:outline-french-gray hover:bg-gunmetal-2/60 duration-200 text-md font-poppins relative btn-dark w-[90%]">
+            <button
+              className="center outline-none hover:outline-french-gray hover:bg-gunmetal-2/60 duration-200 text-md font-poppins relative btn-dark w-[90%]"
+              onClick={handleGoogleAuth}
+            >
               <Image
                 src={google}
                 className="w-[1.5rem] object-fill absolute bottom-0"

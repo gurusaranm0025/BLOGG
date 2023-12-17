@@ -7,7 +7,7 @@ export function lookInSession(key) {
 }
 
 export function removeFromSession(key) {
-  return removeFromSession(key);
+  return sessionStorage.removeItem(key);
 }
 
 export function logOutUser() {

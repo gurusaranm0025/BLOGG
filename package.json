@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "bcryptjs": "^2.4.3",
+    "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
