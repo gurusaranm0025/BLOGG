@@ -3,22 +3,43 @@ import { UserContext } from "@/common/ContextProvider";
 import BlogEditor from "@/components/BlogEditor/BlogEditor";
 import PublishForm from "@/components/PublishForm/PublishForm";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+
+const blogStructure = {
+  title: "",
+  banner: "",
+  content: [],
+  tags: [],
+  description: "",
+  author: { personal_info: {} },
+};
+
+export const EditorContext = createContext({});
 
 function page() {
+  const [blog, setBlog] = useState(blogStructure);
   const router = useRouter();
   const {
     userAuth: { access_token },
   } = useContext(UserContext);
   const [editorState, setEditorState] = useState("editor");
 
-  //   access_token === null ? router.push("/signin") : "";
+  const [textEditor, setTextEditor] = useState({ isReady: false });
 
   return (
-    <div>
+    <EditorContext.Provider
+      value={{
+        blog,
+        setBlog,
+        editorState,
+        setEditorState,
+        textEditor,
+        setTextEditor,
+      }}
+    >
       {access_token === null ? router.push("/signin") : ""}
       {editorState === "editor" ? <BlogEditor /> : <PublishForm />}
-    </div>
+    </EditorContext.Provider>
   );
 }
 

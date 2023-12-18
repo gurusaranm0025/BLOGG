@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { getStorage, ref } from "firebase/storage";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBYI534frg8bAPeOiTc8emTf6li9xiYPBw",
@@ -12,6 +13,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
+//ref for storage
+export const storageRef = ref(storage);
 
 //google auth
 const gprovider = new GoogleAuthProvider();

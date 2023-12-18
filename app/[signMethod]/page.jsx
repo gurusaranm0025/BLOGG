@@ -6,7 +6,7 @@ import maria from "@/public/maria_back.jpg";
 import Input from "@/components/signMethod/Input";
 import google from "@/public/google.svg";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { credValidityCheck, googleAuth } from "@/server/serverActions";
+import { credValidityCheck, googleAuth } from "@/server/signActions";
 import { useContext, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";

@@ -1,22 +1,85 @@
+import { useContext } from "react";
 import Logo from "../Logo/Logo";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
-import defBanner from "@/public/maria_back.jpg";
+import { useEffect } from "react";
+import EditorJS from "@editorjs/editorjs";
+import ImageUpload from "./ImageUpload";
+import { EditorContext } from "@/app/editor/page";
+import { tools } from "./toolsComponent";
+import toast, { Toaster } from "react-hot-toast";
 
 function BlogEditor() {
-  function handleBannerUpload(e) {
-    let img = e.target.files[0];
-    console.log(img);
+  let {
+    blog,
+    blog: { title, banner, content, tags, des },
+    setBlog,
+    setEditorState,
+    textEditor,
+    setTextEditor,
+  } = useContext(EditorContext);
+
+  //useEffect
+  useEffect(() => {
+    setTextEditor(
+      new EditorJS({
+        holderId: "textEditor",
+        data: "",
+        tools: tools,
+        placeholder: "Your blog content goes here",
+      })
+    );
+  }, []);
+
+  function handleTitleKeyDown(e) {
+    if (e.keyCode == 13) e.preventDefault;
   }
+
+  function TitleChangeHandler(e) {
+    let titleInput = e.target;
+    titleInput.style.height = "auto";
+    titleInput.style.height = titleInput.scrollheight + "px";
+    setBlog({ ...blog, title: titleInput.value });
+  }
+
+  function PublishHandler() {
+    if (!banner.length) {
+      return toast.error("Upload a blog banner to publish it.");
+    }
+
+    if (!title.length) {
+      toast.error("Give your blog a title to publish it..");
+    }
+
+    if (textEditor.isReady) {
+      textEditor
+        .save()
+        .then((data) => {
+          if (data.blocks.length) {
+            setBlog({ ...blog, content: data });
+            setEditorState("publish");
+          } else {
+            toast.error("Can't upload an empty blog.");
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }
+
   return (
     <>
+      <Toaster />
       <nav className="navbar">
         <Logo />
         <p className="max-md:hidden text-back line-clamp-1 w-full">
-          Blog Title
+          {title.length ? title : "New Blog"}
         </p>
 
         <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2">Publish</button>
+          <button className="btn-dark py-2" onClick={PublishHandler}>
+            Publish
+          </button>
           <button className="btn-light py-2">Save Draft</button>
         </div>
       </nav>
@@ -24,18 +87,21 @@ function BlogEditor() {
       <AnimationWrapper>
         <section>
           <div className="mx-auto max-w-[900px] w-full">
-            <div className="relative aspect-video bg-white border-4 border-french-gray hover:opacity-80 duration-200">
-              <label htmlFor="uploadBanner">
-                <img src={defBanner} alt="blog banner image" className="z-20" />
-                <input
-                  type="file"
-                  accept=".png, .jpg, .jpeg"
-                  hidden
-                  id="uploadBanner"
-                  onChange={handleBannerUpload}
-                />
-              </label>
+            <div className="relative aspect-video bg-white border-4 border-french-gray/70 hover:opacity-80 duration-200">
+              <ImageUpload />
             </div>
+            <textarea
+              placeholder="Blog Title"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
+              name=""
+              id=""
+              onKeyDown={handleTitleKeyDown}
+              onChange={TitleChangeHandler}
+            ></textarea>
+
+            <hr className="w-full my-5 border-b border-cadet-gray opacity-30" />
+
+            <div id="textEditor" className="font-noto"></div>
           </div>
         </section>
       </AnimationWrapper>
