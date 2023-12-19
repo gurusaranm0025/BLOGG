@@ -103,7 +103,7 @@
     @apply text-rose-quartz underline hover:opacity-50;
   }
 
-  .tag {
+  .Tag {
     @apply p-3 bg-grey rounded-full px-6 capitalize;
   }
 

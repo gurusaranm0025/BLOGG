@@ -23,7 +23,7 @@ function BlogEditor() {
     setTextEditor(
       new EditorJS({
         holderId: "textEditor",
-        data: "",
+        data: content,
         tools: tools,
         placeholder: "Your blog content goes here",
       })
@@ -42,29 +42,29 @@ function BlogEditor() {
   }
 
   function PublishHandler() {
-    if (!banner.length) {
-      return toast.error("Upload a blog banner to publish it.");
-    }
+    // if (!banner.length) {
+    //   return toast.error("Upload a blog banner to publish it.");
+    // }
 
-    if (!title.length) {
-      toast.error("Give your blog a title to publish it..");
-    }
+    // if (!title.length) {
+    //   toast.error("Give your blog a title to publish it..");
+    // }
 
-    if (textEditor.isReady) {
-      textEditor
-        .save()
-        .then((data) => {
-          if (data.blocks.length) {
-            setBlog({ ...blog, content: data });
-            setEditorState("publish");
-          } else {
-            toast.error("Can't upload an empty blog.");
-          }
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
+    // if (textEditor.isReady) {
+    //   textEditor
+    //     .save()
+    //     .then((data) => {
+    //       if (data.blocks.length) {
+    // setBlog({ ...blog, content: data });
+    setEditorState("publish");
+    //       } else {
+    //         toast.error("Can't upload an empty blog.");
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err.message);
+    //     });
+    // }
   }
 
   return (
@@ -91,6 +91,7 @@ function BlogEditor() {
               <ImageUpload />
             </div>
             <textarea
+              defaultValue={title}
               placeholder="Blog Title"
               className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
               name=""

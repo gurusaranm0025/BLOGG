@@ -1,15 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { getStorage, ref } from "firebase/storage";
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBYI534frg8bAPeOiTc8emTf6li9xiYPBw",
-  authDomain: "bloom-blogging.firebaseapp.com",
-  projectId: "bloom-blogging",
-  storageBucket: "bloom-blogging.appspot.com",
-  messagingSenderId: "212937630808",
-  appId: "1:212937630808:web:d9183a6385d7f624a9562d",
-};
+import { firebaseConfig } from "./firebaseConfig";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
