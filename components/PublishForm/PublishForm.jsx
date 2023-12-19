@@ -5,15 +5,23 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import { EditorContext } from "@/app/editor/page";
 import Tags from "./Tags";
+import { createBlog } from "@/server/publishBlog";
+import { UserContext } from "@/common/ContextProvider";
+import { useRouter } from "next/navigation";
 
 function PublishForm() {
-  let characterLimit = 200;
+  const router = useRouter();
+  // let characterLimit = 200;
   let {
     setEditorState,
     blog,
-    blog: { banner, title, tags, des },
+    blog: { banner, title, content, tags, des },
     setBlog,
   } = useContext(EditorContext);
+
+  let {
+    userAuth: { access_token },
+  } = useContext(UserContext);
 
   function CloseEventHandler() {
     setEditorState("editor");
@@ -49,6 +57,36 @@ function PublishForm() {
       e.target.value = "";
     }
   }
+
+  async function publishHandler(e) {
+    e.preventDefault();
+    if (e.target.className.includes("disable")) return;
+
+    const loadingToast = toast.loading("Publishing...");
+    e.target.classList.add("disable");
+
+    let blogObj = { title, des, banner, content, tags, draft: false };
+    const result = await createBlog(access_token, blogObj).catch((err) => {
+      toast.error("failed");
+      console.log(err.message);
+    });
+
+    toast.dismiss(loadingToast);
+    e.target.classList.remove("disable");
+
+    if (result.status == 500) {
+      console.error(result.error);
+      toast.error(result.message);
+    } else {
+      setTimeout(() => {
+        router.push("/"), 500;
+      });
+      toast.success("Published successfully");
+    }
+
+    console.log(result);
+  }
+
   return (
     <AnimationWrapper>
       <section className="w-screen min-h-screen grid items-center lg:grid-cols-2 py-16 lg:gap-4">
@@ -88,14 +126,14 @@ function PublishForm() {
           </p>
 
           <textarea
-            maxLength={characterLimit}
+            maxLength={200}
             defaultValue={des}
             onChange={desChangeHandler}
             onKeyDown={onKeyDownHandler}
             className="h-40 resize-none leading-7 input-box pl-4 outline-none focus:outline-french-gray/50 hover:bg-gray-300 bg-french-gray/50 duration-200 focus:bg-white border-none"
           ></textarea>
           <p className="mt-1 text-gunmetal text-sm text-right">
-            {characterLimit - des.length} characters left.
+            {200 - des.length} characters left.
           </p>
 
           <p className="text-gunmetal mb-2 mt-9">
@@ -118,7 +156,9 @@ function PublishForm() {
             {10 - tags.length} tags left
           </p>
 
-          <button className="btn-dark px-8">Publish</button>
+          <button className="btn-dark px-8" onClick={publishHandler}>
+            Publish
+          </button>
         </div>
       </section>
     </AnimationWrapper>

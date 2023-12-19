@@ -7,8 +7,12 @@ import ImageUpload from "./ImageUpload";
 import { EditorContext } from "@/app/editor/page";
 import { tools } from "./toolsComponent";
 import toast, { Toaster } from "react-hot-toast";
+import { UserContext } from "@/common/ContextProvider";
+import { useRouter } from "next/navigation";
+import { createBlog } from "@/server/publishBlog";
 
 function BlogEditor() {
+  const router = useRouter();
   let {
     blog,
     blog: { title, banner, content, tags, des },
@@ -18,16 +22,22 @@ function BlogEditor() {
     setTextEditor,
   } = useContext(EditorContext);
 
+  let {
+    userAuth: { access_token },
+  } = useContext(UserContext);
+
   //useEffect
   useEffect(() => {
-    setTextEditor(
-      new EditorJS({
-        holderId: "textEditor",
-        data: content,
-        tools: tools,
-        placeholder: "Your blog content goes here",
-      })
-    );
+    if (!textEditor.isReady) {
+      setTextEditor(
+        new EditorJS({
+          holderId: "textEditor",
+          data: content,
+          tools: tools,
+          placeholder: "Your blog content goes here",
+        })
+      );
+    }
   }, []);
 
   function handleTitleKeyDown(e) {
@@ -42,29 +52,68 @@ function BlogEditor() {
   }
 
   function PublishHandler() {
-    // if (!banner.length) {
-    //   return toast.error("Upload a blog banner to publish it.");
-    // }
+    if (!banner.length) {
+      return toast.error("Upload a blog banner to publish it.");
+    }
 
-    // if (!title.length) {
-    //   toast.error("Give your blog a title to publish it..");
-    // }
+    if (!title.length) {
+      toast.error("Give your blog a title to publish it..");
+    }
 
-    // if (textEditor.isReady) {
-    //   textEditor
-    //     .save()
-    //     .then((data) => {
-    //       if (data.blocks.length) {
-    // setBlog({ ...blog, content: data });
-    setEditorState("publish");
-    //       } else {
-    //         toast.error("Can't upload an empty blog.");
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.log(err.message);
-    //     });
-    // }
+    if (textEditor.isReady) {
+      textEditor
+        .save()
+        .then((data) => {
+          if (data.blocks.length) {
+            setBlog({ ...blog, content: data });
+            setEditorState("publish");
+          } else {
+            toast.error("Can't upload an empty blog.");
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }
+
+  async function saveDraftHandler(e) {
+    e.preventDefault();
+    if (e.target.className.includes("disable")) return;
+
+    const loadingToast = toast.loading("Publishing...");
+    e.target.classList.add("disable");
+
+    if (textEditor.isReady) {
+      await textEditor.save().then(async (dataContent) => {
+        let blogObj = {
+          title,
+          des,
+          banner: dataContent,
+          content,
+          tags,
+          draft: true,
+        };
+
+        const result = await createBlog(access_token, blogObj).catch((err) => {
+          toast.error("failed");
+          console.log(err.message);
+        });
+
+        toast.dismiss(loadingToast);
+        e.target.classList.remove("disable");
+
+        if (result.status == 500) {
+          console.error(result.error);
+          toast.error(result.message);
+        } else {
+          setTimeout(() => {
+            router.push("/"), 500;
+          });
+          toast.success("Draft Saved");
+        }
+      });
+    }
   }
 
   return (
@@ -80,7 +129,9 @@ function BlogEditor() {
           <button className="btn-dark py-2" onClick={PublishHandler}>
             Publish
           </button>
-          <button className="btn-light py-2">Save Draft</button>
+          <button className="btn-light py-2" onClick={saveDraftHandler}>
+            Save Draft
+          </button>
         </div>
       </nav>
 
