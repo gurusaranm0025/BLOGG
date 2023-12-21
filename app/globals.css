@@ -39,7 +39,7 @@
   }
 
   .h-cover {
-    @apply min-h-[calc(100vh-80px)];
+    @apply min-h-[calc(100vh-75px)];
   }
 
   .center {

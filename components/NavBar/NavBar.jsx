@@ -5,7 +5,6 @@ import Logo from "../Logo/Logo";
 import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { UserContext } from "@/common/ContextProvider";
-import Link from "next/link";
 import UserNavigationPanel from "./UserNavigationPanel";
 
 function NavBar() {
@@ -32,9 +31,9 @@ function NavBar() {
         <input
           type="text"
           placeholder="Search"
-          className="w-full md:w-auto bg-gray-300 p-[15px] pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-gunmetal outline-none m-0 focus:outline-gunmetal focus:bg-cadet-gray duration-300 focus:placeholder:text-white hover:bg-french-gray md:pl-14"
+          className="peer w-full md:w-auto bg-gray-300 p-[15px] pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-gunmetal outline-none m-0 focus:outline-gunmetal focus:bg-cadet-gray duration-300 focus:placeholder:text-white hover:bg-french-gray md:pl-14"
         />
-        <MagnifyingGlassIcon className="absolute w-[1.5rem] right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 md:w-[1.3rem]" />
+        <MagnifyingGlassIcon className="absolute w-[1.5rem] right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 md:w-[1.3rem] peer-focus:stroke-white" />
       </div>
 
       <div className="flex items-center gap-3 md:gap-6 ml-auto">

@@ -2,7 +2,15 @@ import { useContext } from "react";
 import Logo from "../Logo/Logo";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import { useEffect } from "react";
-import EditorJS from "@editorjs/editorjs";
+//::::::::::::
+import { EditorJS } from "@/components/BlogEditor/toolsComponent";
+// import EditorJS from "@editorjs/editorjs";
+
+// import dynamic from "next/dynamic";
+
+// const EditorJS = dynamic(() => import("@editorjs/editorjs"), { ssr: false });
+
+//:::::::::::::
 import ImageUpload from "./ImageUpload";
 import { EditorContext } from "@/app/editor/page";
 import { tools } from "./toolsComponent";
@@ -47,7 +55,7 @@ function BlogEditor() {
   function TitleChangeHandler(e) {
     let titleInput = e.target;
     titleInput.style.height = "auto";
-    titleInput.style.height = titleInput.scrollheight + "px";
+    titleInput.style.height = titleInput.scrollHeight + "px";
     setBlog({ ...blog, title: titleInput.value });
   }
 
