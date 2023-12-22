@@ -3,8 +3,8 @@ import Logo from "../Logo/Logo";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import { useEffect } from "react";
 //::::::::::::
-import { EditorJS } from "@/components/BlogEditor/toolsComponent";
-// import EditorJS from "@editorjs/editorjs";
+// import { EditorJS } from "@/components/BlogEditor/toolsComponent";
+import EditorJS from "@editorjs/editorjs";
 
 // import dynamic from "next/dynamic";
 
