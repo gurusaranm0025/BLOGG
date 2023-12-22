@@ -20,15 +20,6 @@ export const theme = {
     ...defaultColors,
     ...colors,
   },
-  fontSize: {
-    sm: "12px",
-    base: "14px",
-    xl: "16px",
-    "2xl": "20px",
-    "3xl": "28px",
-    "4xl": "38px",
-    "5xl": "50px",
-  },
   extend: {
     backgroundImage: {
       "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
