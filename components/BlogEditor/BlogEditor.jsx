@@ -1,23 +1,15 @@
 import { useContext } from "react";
 import Logo from "../Logo/Logo";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
-import { useEffect } from "react";
-//::::::::::::
-import { EditorJS } from "@/components/BlogEditor/toolsComponent";
-// import EditorJS from "@editorjs/editorjs";
-
-// import dynamic from "next/dynamic";
-
-// const EditorJS = dynamic(() => import("@editorjs/editorjs"), { ssr: false });
-
-//:::::::::::::
 import ImageUpload from "./ImageUpload";
 import { EditorContext } from "@/app/editor/page";
-import { tools } from "./toolsComponent";
 import toast, { Toaster } from "react-hot-toast";
 import { UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
 import { createBlog } from "@/server/publishBlog";
+import dynamic from "next/dynamic";
+
+let CustomEditor = dynamic(() => import("./CustomEditor"), { ssr: false });
 
 function BlogEditor() {
   const router = useRouter();
@@ -33,20 +25,6 @@ function BlogEditor() {
   let {
     userAuth: { access_token },
   } = useContext(UserContext);
-
-  //useEffect
-  useEffect(() => {
-    if (!textEditor.isReady) {
-      setTextEditor(
-        new EditorJS({
-          holderId: "textEditor",
-          data: content,
-          tools: tools,
-          placeholder: "Your blog content goes here",
-        })
-      );
-    }
-  }, []);
 
   function handleTitleKeyDown(e) {
     if (e.keyCode == 13) e.preventDefault;
@@ -124,6 +102,10 @@ function BlogEditor() {
     }
   }
 
+  function handleInstance(instance) {
+    setTextEditor(instance);
+  }
+
   return (
     <>
       <Toaster />
@@ -158,10 +140,12 @@ function BlogEditor() {
               onKeyDown={handleTitleKeyDown}
               onChange={TitleChangeHandler}
             ></textarea>
-
             <hr className="w-full my-5 border-b border-cadet-gray opacity-30" />
-
-            <div id="textEditor" className="font-noto"></div>
+            {CustomEditor ? (
+              <CustomEditor data={content} handleInstance={handleInstance} />
+            ) : (
+              <span className="text-red-500 text-2xl font-noto">ERROR</span>
+            )}
           </div>
         </section>
       </AnimationWrapper>
