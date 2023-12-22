@@ -22,8 +22,6 @@ function page({ params }) {
     setUserAuth,
   } = useContext(UserContext);
 
-  console.log(access_token);
-
   const [userCred, setUSerCreds] = useState({
     username: "",
     email: "",
@@ -62,7 +60,6 @@ function page({ params }) {
     authWithGoogle()
       .then(async (user) => {
         const credResult = await googleAuth((access_token = user.accessToken));
-        console.log(credResult);
         if (credResult.status == 200) {
           storeInSession("user", JSON.stringify(credResult));
           setUserAuth(credResult);
@@ -151,6 +148,7 @@ function page({ params }) {
                 <Image
                   src={google}
                   className="w-[1.5rem] object-fill absolute bottom-0"
+                  alt="Google-icon"
                 />
                 <span className="mx-9">Continue with Google</span>
               </button>
