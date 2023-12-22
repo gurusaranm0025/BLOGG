@@ -1,4 +1,3 @@
-"use client";
 import toast, { Toaster } from "react-hot-toast";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import { XMarkIcon } from "@heroicons/react/24/outline";
