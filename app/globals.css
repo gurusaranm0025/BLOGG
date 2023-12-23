@@ -108,11 +108,11 @@
   }
 
   .blog-title {
-    @apply text-2xl font-medium leading-7 line-clamp-3 sm:line-clamp-2;
+    @apply text-2xl font-poppins font-medium leading-8 line-clamp-3 sm:line-clamp-2;
   }
 
   .blog-index {
-    @apply text-4xl sm:text-3xl lg:text-5xl font-bold text-grey leading-none;
+    @apply text-3xl sm:text-2xl lg:text-5xl font-bold text-cadet-gray leading-none;
   }
 }
 
