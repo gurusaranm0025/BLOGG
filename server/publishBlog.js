@@ -13,15 +13,12 @@ mongoose.connect(process.env.DB_LOCATION, {
 });
 
 export async function createBlog(token, blogContent) {
-  console.log("token::::;", token);
-  console.log("Blog::::::", blogContent);
   if (token == null) {
     return {
       status: 500,
       message: "Access denied. try signing in again with your account.",
     };
   }
-  console.log(":::::::::::::::::::::::::::tokening::::::::::::::::::::::");
 
   let authorId = null;
 
@@ -40,15 +37,13 @@ export async function createBlog(token, blogContent) {
     }
   );
 
-  console.log(tokenResult);
-
   if ((tokenResult.status = 200)) {
     authorId = tokenResult.id;
   } else {
+    console.log(tokenResult);
     return tokenResult;
   }
 
-  console.log(":::::::::::::::::::::::blogging:::::::::::::::::::::::::::::");
   let { title, des, banner, tags, content, draft } = blogContent;
 
   if (!title.length)
@@ -100,10 +95,6 @@ export async function createBlog(token, blogContent) {
       .replace(/\s+/g, "-")
       .trim() + nanoid();
 
-  console.log(
-    ":::::::::::::::::::::::::::::::;;blog model with the schema:::::::::::::::::::::::::::::::;"
-  );
-
   let blog = new Blog({
     title,
     des,
@@ -114,20 +105,10 @@ export async function createBlog(token, blogContent) {
     draft: Boolean(draft),
   });
 
-  console.log(
-    "::::::::::::::::::::::::::::::blog uplaoding or inserting into db:::::::::::::::::::::::::::::::"
-  );
-
   const blogPublishResult = await blog
     .save()
     .then(async (blog) => {
-      console.log(
-        "::::::::::::::::::::::::::::::::::;save successfull:::::::::::::::::"
-      );
       let incrementVal = draft ? 0 : 1;
-      console.log(
-        "::::::::::::::::::::::::finding user::::::::::::::::::::::::;"
-      );
       const findUpdateResult = await User.findOneAndUpdate(
         { _id: authorId },
         {
@@ -136,16 +117,9 @@ export async function createBlog(token, blogContent) {
         }
       )
         .then((user) => {
-          console.log(
-            ":::::::::::::::::::::::::::::::::::;finding and update successfull::::::::::::::::::::::"
-          );
-          console.log(user);
           return { status: 200, message: blog.blog_id };
         })
         .catch((err) => {
-          console.log(
-            "::::::::::::::::::::::::::::::::::::;finding and upadte failed:::::::::::::::::::"
-          );
           console.log(err.message);
           return {
             status: 500,
@@ -157,9 +131,6 @@ export async function createBlog(token, blogContent) {
       return findUpdateResult;
     })
     .catch((err) => {
-      console.log(
-        ":::::::::::::::::::::::::::::::::::saving the model failed::::::::::::::::::::::::::::::::;"
-      );
       console.log(err.message);
       return {
         status: 500,
@@ -167,7 +138,7 @@ export async function createBlog(token, blogContent) {
         error: err.message,
       };
     });
-  console.log("fffff");
-  console.log(blogPublishResult);
+
+  blogPublishResult.status == 500 ? console.log(blogPublishResult) : "";
   return blogPublishResult;
 }

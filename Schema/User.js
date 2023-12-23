@@ -1,5 +1,3 @@
-"use server";
-
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
@@ -125,17 +123,6 @@ const userSchema = new Schema(
   }
 );
 
-//f**king piece of s**t
-// export default mongoose.model("users", userSchema);
-// if(mongoose.model.User) {
-//     export default mongoose.model.User
-// } else if (mongoose.model.users) {
-//     export default mongoose.model.users
-// } else if (mongoose.model.Users) {
-//     export default mongoose.model.Users
-// } else {
-//     export default mongoose.model("user", userSchema);
-// }
-const exports = mongoose.models.User ?? mongoose.model("User", userSchema);
+const exports = mongoose.models.users || mongoose.model("users", userSchema);
 
 export default exports;

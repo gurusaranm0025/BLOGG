@@ -1,7 +1,20 @@
+"use client";
+import { useEffect } from "react";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import InPageNavigation from "./InPageNavigation";
+import { getLatestBlogs } from "@/server/latestBlogs";
 
 function HomePage() {
+  function fetchLatestBlogs() {
+    const result = getLatestBlogs();
+
+    console.log(result);
+  }
+
+  useEffect(() => {
+    fetchLatestBlogs();
+  }, []);
+
   return (
     <AnimationWrapper>
       <section className="h-cover flex justify-center gap-10">
