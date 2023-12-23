@@ -1,9 +1,9 @@
-const Loader = () => {
+function Loader() {
   return (
     <div className="w-12 mx-auto my-8">
       <svg
         aria-hidden="true"
-        className="w-12 h-12 mr-2 text-white animate-spin fill-dark-grey"
+        className="w-12 h-12 mr-2 text-white animate-spin fill-cadet-gray"
         viewBox="0 0 100 101"
         fill="none"
       >
@@ -19,6 +19,6 @@ const Loader = () => {
       {/* <span className="sr-only">Loading...</span> */}
     </div>
   );
-};
+}
 
 export default Loader;
