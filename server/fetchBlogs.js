@@ -125,3 +125,26 @@ export async function searchBlogs({ query, tag, page = 1 }) {
 
   return result;
 }
+
+//searching users in DB
+export async function searchUsers({ query }) {
+  const result = await User.find({
+    "personal_info.username": new RegExp(query, "i"),
+  })
+    .limit(50)
+    .select(
+      "personal_info.username personal_info.fullname personal_info.profile_img -_id"
+    )
+    .then((users) => {
+      return { status: 200, users };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Can't connect to the server",
+        error: err.message,
+      };
+    });
+
+  return result;
+}

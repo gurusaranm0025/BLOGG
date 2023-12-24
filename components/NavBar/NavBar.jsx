@@ -7,6 +7,7 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { UserContext } from "@/common/ContextProvider";
 import UserNavigationPanel from "./UserNavigationPanel";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function NavBar() {
   const router = useRouter();
@@ -28,9 +29,9 @@ function NavBar() {
 
   return (
     <nav className="navbar">
-      <a href="/">
+      <Link href="/">
         <Logo />
-      </a>
+      </Link>
 
       <div
         className={
@@ -55,21 +56,21 @@ function NavBar() {
           <MagnifyingGlassIcon className="w-[1.5rem]" />
         </button>
 
-        <a
+        <Link
           href="/editor"
           className="hidden md:flex gap-2 link rounded-[5px] duration-200 "
         >
           <PencilSquareIcon className="w-[1.1rem]" />
           <p>Write</p>
-        </a>
+        </Link>
 
         {access_token ? (
           <>
-            <a href="/dashboard/notification">
+            <Link href="/dashboard/notification">
               <button className="w-12 h-12 bg-gray-300 rounded-full relative hover:bg-black/10 duration-150">
                 <BellIcon className="w-[1.5rem] block mx-auto my-auto" />
               </button>
-            </a>
+            </Link>
 
             <div
               className="relative"
@@ -92,15 +93,15 @@ function NavBar() {
           </>
         ) : (
           <>
-            <a href="/signin" className="btn-dark py-2 duration-200">
+            <Link href="/account/signin" className="btn-dark py-2 duration-200">
               Sign In
-            </a>
-            <a
-              href="/signup"
+            </Link>
+            <Link
+              href="/account/signup"
               className="btn-light py-2 hidden md:block duration-200"
             >
               Sign Up
-            </a>
+            </Link>
           </>
         )}
       </div>

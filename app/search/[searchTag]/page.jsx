@@ -6,13 +6,16 @@ import LoadMoreDataBtn from "@/components/HomePage/LoadMoreDataBtn";
 import NoData from "@/components/HomePage/NoData";
 import Loader from "@/components/Loader/Loader";
 import NavBar from "@/components/NavBar/NavBar";
+import UserCard from "@/components/SearchPage/UserCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { searchBlogs } from "@/server/fetchBlogs";
+import { searchBlogs, searchUsers } from "@/server/fetchBlogs";
+import { UsersIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 function page({ params }) {
   let query = params.searchTag;
   let [blogs, setBlogs] = useState(null);
+  let [users, setUsers] = useState(null);
 
   function searchBlogsByQuery({ page = 1, createNewArr = false }) {
     searchBlogs({ query: query, page }).then(async (data) => {
@@ -29,55 +32,104 @@ function page({ params }) {
     });
   }
 
+  function getUsers() {
+    searchUsers({ query })
+      .then((data) => {
+        if (data.status == 200) {
+          setUsers(data.users);
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
   function resetState() {
     setBlogs(null);
+    setUsers(null);
   }
 
   useEffect(() => {
     resetState();
     searchBlogsByQuery({ page: 1, createNewArr: true });
+    getUsers();
   }, []);
+
+  function UserCardWrapper() {
+    return (
+      <>
+        {console.log(users)}
+        {users == null ? (
+          <Loader />
+        ) : users.length ? (
+          users.map((user, i) => {
+            return (
+              <AnimationWrapper
+                key={i}
+                transition={{ duration: 1, delay: i * 0.08 }}
+              >
+                <UserCard user={user} />
+              </AnimationWrapper>
+            );
+          })
+        ) : (
+          <NoData message="No users were found" />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
       <NavBar />
 
-      <main>
-        <section className="h-cover justify-center gap-10">
-          <div className="w-full">
-            <InPageNavigation
-              routes={[`Search results for "${query}"`, "Accounts Matched"]}
-              defaultHidden={["Accounts Matched"]}
-            >
-              <>
-                {blogs == null ? (
-                  <Loader />
-                ) : blogs.results.length ? (
-                  blogs.results.map((blog, i) => {
-                    return (
-                      <AnimationWrapper
-                        key={i}
-                        transition={{ duration: 1, delay: i * 0.1 }}
-                      >
-                        <BlogPostCard
-                          content={blog}
-                          author={blog.author.personal_info}
-                        />
-                      </AnimationWrapper>
-                    );
-                  })
-                ) : (
-                  <NoData message="No blogs have been published under this category" />
-                )}
-                <LoadMoreDataBtn
-                  state={blogs}
-                  fetchDataFun={searchBlogsByQuery}
-                />
-              </>
-            </InPageNavigation>
-          </div>
-        </section>
-      </main>
+      <section className="flex h-cover justify-center gap-10">
+        <div className="w-full">
+          <InPageNavigation
+            routes={[`Search results for "${query}"`, "Accounts Matched"]}
+            defaultHidden={["Accounts Matched"]}
+          >
+            <>
+              {blogs == null ? (
+                <Loader />
+              ) : blogs.results.length ? (
+                blogs.results.map((blog, i) => {
+                  return (
+                    <AnimationWrapper
+                      key={i}
+                      transition={{ duration: 1, delay: i * 0.1 }}
+                    >
+                      <BlogPostCard
+                        content={blog}
+                        author={blog.author.personal_info}
+                      />
+                    </AnimationWrapper>
+                  );
+                })
+              ) : (
+                <NoData message="No blogs have been published under this category" />
+              )}
+              <LoadMoreDataBtn
+                state={blogs}
+                fetchDataFun={searchBlogsByQuery}
+              />
+            </>
+
+            <UserCardWrapper />
+          </InPageNavigation>
+        </div>
+
+        <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-cadet-gray/50 pl-8 pt-3 max-md:hidden">
+          <h1 className="font-medium text-lg mb-8 flex items-center">
+            Users related to search
+            <UsersIcon className="w-[1.8rem] inline-block ml-1 " />
+          </h1>
+
+          <UserCardWrapper />
+        </div>
+      </section>
     </>
   );
 }
