@@ -62,12 +62,11 @@ function page({ params }) {
       });
   }
 
-  function getBlogs({ createNewArr = false, page = 1, user_id }) {
+  function getBlogs({ page = 1, user_id }) {
     user_id = user_id == undefined ? blogs.user_id : user_id;
 
     searchBlogs({ author: user_id, page: page }).then(async (data) => {
       let formatData = await filterPaginationData({
-        createNewArr,
         state: blogs,
         data: data.blogs,
         page: page,
