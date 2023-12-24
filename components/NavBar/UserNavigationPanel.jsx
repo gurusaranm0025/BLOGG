@@ -20,7 +20,7 @@ function UserNavigationPanel() {
       className="absolute right-0 z-50"
       transition={{ duration: 0.2 }}
     >
-      <div className="absolute right-0 border border-gray-300 w-60 duration-200">
+      <div className="absolute bg-white right-0 border border-gray-300 w-60 duration-200">
         <a
           href="/editor"
           className="flex gap-2 link md:hidden pl-8 py-4 duration-200"

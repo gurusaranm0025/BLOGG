@@ -92,7 +92,7 @@ export async function getTrendingBlogs() {
 }
 
 //searching blogs
-export async function searchBlogs({ query, tag, page = 1 }) {
+export async function searchBlogs({ author, query, tag, page = 1 }) {
   let maxLimit = 5;
   let findQuery;
 
@@ -100,6 +100,8 @@ export async function searchBlogs({ query, tag, page = 1 }) {
     findQuery = { tags: tag, draft: false };
   } else if (query) {
     findQuery = { draft: false, title: new RegExp(query, "i") };
+  } else if (author) {
+    findQuery = { draft: false, author: author };
   }
 
   const result = await Blog.find(findQuery)
@@ -142,6 +144,26 @@ export async function searchUsers({ query }) {
       return {
         status: 500,
         message: "Can't connect to the server",
+        error: err.message,
+      };
+    });
+
+  return result;
+}
+
+//getting details or profile of a particular user
+export async function getUserProfile({ username }) {
+  const result = await User.findOne({
+    "personal_info.username": username,
+  })
+    .select("-personal_info.password -google_auth -updatedAt -blogs")
+    .then((user) => {
+      return { status: 200, user };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Error occurred while finding the user",
         error: err.message,
       };
     });

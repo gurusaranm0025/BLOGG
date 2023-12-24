@@ -105,16 +105,16 @@ function page({ params }) {
                         content={blog}
                         author={blog.author.personal_info}
                       />
+                      <LoadMoreDataBtn
+                        state={blogs}
+                        fetchDataFun={searchBlogsByQuery}
+                      />
                     </AnimationWrapper>
                   );
                 })
               ) : (
                 <NoData message="No blogs have been published under this category" />
               )}
-              <LoadMoreDataBtn
-                state={blogs}
-                fetchDataFun={searchBlogsByQuery}
-              />
             </>
 
             <UserCardWrapper />

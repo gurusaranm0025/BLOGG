@@ -130,18 +130,20 @@ function HomePage() {
                         content={blog}
                         author={blog.author.personal_info}
                       />
+                      <LoadMoreDataBtn
+                        state={blogs}
+                        fetchDataFun={
+                          pageState == "home"
+                            ? fetchLatestBlogs
+                            : fetchBlogsByCategory
+                        }
+                      />
                     </AnimationWrapper>
                   );
                 })
               ) : (
                 <NoData message="No blogs have been published under this category" />
               )}
-              <LoadMoreDataBtn
-                state={blogs}
-                fetchDataFun={
-                  pageState == "home" ? fetchLatestBlogs : fetchBlogsByCategory
-                }
-              />
             </>
 
             {trendingBlogs == null ? (
