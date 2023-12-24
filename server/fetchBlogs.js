@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 //schema
 import User from "@/Schema/User";
 import Blog from "@/Schema/Blog";
-import { resolve } from "styled-jsx/css";
 
 mongoose.connect(process.env.DB_LOCATION, { autoIndex: true });
 
