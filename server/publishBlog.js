@@ -98,6 +98,7 @@ export async function createBlog(token, blogContent) {
   let blog = new Blog({
     title,
     des,
+    banner,
     content,
     tags,
     author: authorId,

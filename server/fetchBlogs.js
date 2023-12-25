@@ -91,12 +91,23 @@ export async function getTrendingBlogs() {
 }
 
 //searching blogs
-export async function searchBlogs({ author, query, tag, page = 1 }) {
-  let maxLimit = 5;
+export async function searchBlogs({
+  author,
+  limit,
+  query,
+  tag,
+  page = 1,
+  eliminate_blog,
+}) {
+  let maxLimit = limit ? limit : 5;
   let findQuery;
 
   if (tag) {
-    findQuery = { tags: tag, draft: false };
+    findQuery = {
+      tags: tag,
+      draft: false,
+      blog_id: { $ne: eliminate_blog },
+    };
   } else if (query) {
     findQuery = { draft: false, title: new RegExp(query, "i") };
   } else if (author) {
@@ -179,7 +190,7 @@ export async function getBlog({ blog_id }) {
   )
     .populate(
       "author",
-      "personal_info.fullname personal_info.username personal_info,profile_img"
+      "personal_info.fullname personal_info.username personal_info.profile_img"
     )
     .lean()
     .select("title des content banner activity publishedAt blog_id tags")

@@ -75,8 +75,8 @@ function BlogEditor() {
         let blogObj = {
           title,
           des,
-          banner: dataContent,
-          content,
+          banner,
+          content: dataContent,
           tags,
           draft: true,
         };
