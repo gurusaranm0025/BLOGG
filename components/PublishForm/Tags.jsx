@@ -1,4 +1,4 @@
-import { EditorContext } from "@/app/editor/page";
+import { EditorContext } from "../Editor/EditorPage";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 

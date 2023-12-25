@@ -44,7 +44,7 @@ export async function createBlog(token, blogContent) {
     return tokenResult;
   }
 
-  let { title, des, banner, tags, content, draft } = blogContent;
+  let { title, des, banner, tags, content, draft, id } = blogContent;
 
   if (!title.length)
     return {
@@ -90,56 +90,76 @@ export async function createBlog(token, blogContent) {
   tags = tags.map((tag) => tag.toLowerCase());
 
   let blog_id =
+    id ||
     title
       .replace(/[^a-zA-Z0-9]/g, " ")
       .replace(/\s+/g, "-")
       .trim() + nanoid();
 
-  let blog = new Blog({
-    title,
-    des,
-    banner,
-    content,
-    tags,
-    author: authorId,
-    blog_id,
-    draft: Boolean(draft),
-  });
+  if (id) {
+    const blogUpdateResult = await Blog.findOneAndUpdate(
+      { blog_id },
+      { title, des, banner, content, tags, draft: Boolean(draft) }
+    )
+      .then((data) => {
+        return { status: 200, id: data.blog_id };
+      })
+      .catch((err) => {
+        return {
+          status: 500,
+          message: "Failed to update the blog.",
+          error: err.message,
+        };
+      });
 
-  const blogPublishResult = await blog
-    .save()
-    .then(async (blog) => {
-      let incrementVal = draft ? 0 : 1;
-      const findUpdateResult = await User.findOneAndUpdate(
-        { _id: authorId },
-        {
-          $inc: { "account_info.total_posts": incrementVal },
-          $push: { blogs: blog._id },
-        }
-      )
-        .then((user) => {
-          return { status: 200, message: blog.blog_id };
-        })
-        .catch((err) => {
-          console.log(err.message);
-          return {
-            status: 500,
-            message: "Failed to update total number of posts",
-            error: err.message,
-          };
-        });
-
-      return findUpdateResult;
-    })
-    .catch((err) => {
-      console.log(err.message);
-      return {
-        status: 500,
-        message: "Failed to publish blog",
-        error: err.message,
-      };
+    return blogUpdateResult;
+  } else {
+    let blog = new Blog({
+      title,
+      des,
+      banner,
+      content,
+      tags,
+      author: authorId,
+      blog_id,
+      draft: Boolean(draft),
     });
 
-  blogPublishResult.status == 500 ? console.log(blogPublishResult) : "";
-  return blogPublishResult;
+    const blogPublishResult = await blog
+      .save()
+      .then(async (blog) => {
+        let incrementVal = draft ? 0 : 1;
+        const findUpdateResult = await User.findOneAndUpdate(
+          { _id: authorId },
+          {
+            $inc: { "account_info.total_posts": incrementVal },
+            $push: { blogs: blog._id },
+          }
+        )
+          .then((user) => {
+            return { status: 200, message: blog.blog_id };
+          })
+          .catch((err) => {
+            console.log(err.message);
+            return {
+              status: 500,
+              message: "Failed to update total number of posts",
+              error: err.message,
+            };
+          });
+
+        return findUpdateResult;
+      })
+      .catch((err) => {
+        console.log(err.message);
+        return {
+          status: 500,
+          message: "Failed to publish blog",
+          error: err.message,
+        };
+      });
+
+    blogPublishResult.status == 500 ? console.log(blogPublishResult) : "";
+    return blogPublishResult;
+  }
 }

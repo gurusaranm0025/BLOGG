@@ -2,11 +2,11 @@ import { useContext } from "react";
 import Logo from "../Logo/Logo";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import ImageUpload from "./ImageUpload";
-import { EditorContext } from "@/app/editor/page";
+import { EditorContext } from "../Editor/EditorPage";
 import toast, { Toaster } from "react-hot-toast";
 import { UserContext } from "@/common/ContextProvider";
-import { useRouter } from "next/navigation";
 import { createBlog } from "@/server/publishBlog";
+import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 let CustomEditor = dynamic(() => import("./CustomEditor"), { ssr: false });
@@ -25,6 +25,8 @@ function BlogEditor() {
   let {
     userAuth: { access_token },
   } = useContext(UserContext);
+
+  let { blog_id } = useParams();
 
   function handleTitleKeyDown(e) {
     if (e.keyCode == 13) e.preventDefault;
@@ -81,10 +83,15 @@ function BlogEditor() {
           draft: true,
         };
 
-        const result = await createBlog(access_token, blogObj).catch((err) => {
+        const result = await createBlog(access_token, {
+          ...blogObj,
+          id: blog_id,
+        }).catch((err) => {
           toast.error("failed");
           console.log(err.message);
         });
+
+        console.log(result);
 
         toast.dismiss(loadingToast);
         e.target.classList.remove("disable");
@@ -142,7 +149,10 @@ function BlogEditor() {
             ></textarea>
             <hr className="w-full my-5 border-b border-cadet-gray opacity-30" />
             {CustomEditor ? (
-              <CustomEditor data={content} handleInstance={handleInstance} />
+              <CustomEditor
+                data={Array.isArray(content) ? content[0] : content}
+                handleInstance={handleInstance}
+              />
             ) : (
               <span className="text-red-500 text-2xl font-noto">ERROR</span>
             )}

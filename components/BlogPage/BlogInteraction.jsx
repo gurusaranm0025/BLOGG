@@ -46,7 +46,7 @@ function BlogInteraction() {
         <div className="flex gap-6 items-center">
           {username == auhtorUsername ? (
             <Link
-              href={"/editor/${blog_id}"}
+              href={`/editor/${blog_id}`}
               className="underline hover:text-purple-400 duration-200"
             >
               Edit

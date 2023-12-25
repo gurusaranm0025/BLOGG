@@ -1,6 +1,6 @@
 "use client";
 import defaultBanner from "@/public/blog-banner.png";
-import { EditorContext } from "@/app/editor/page";
+import { EditorContext } from "../Editor/EditorPage";
 import { UserContext } from "@/common/ContextProvider";
 import { useContext } from "react";
 import toast, { Toaster } from "react-hot-toast";

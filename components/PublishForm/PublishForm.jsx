@@ -2,15 +2,16 @@ import toast, { Toaster } from "react-hot-toast";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useContext } from "react";
-import { EditorContext } from "@/app/editor/page";
+import { EditorContext } from "../Editor/EditorPage";
 import Tags from "./Tags";
 import { createBlog } from "@/server/publishBlog";
 import { UserContext } from "@/common/ContextProvider";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 function PublishForm() {
   const router = useRouter();
-  // let characterLimit = 200;
+  let { blog_id } = useParams();
+
   let {
     setEditorState,
     blog,
@@ -65,7 +66,11 @@ function PublishForm() {
     e.target.classList.add("disable");
 
     let blogObj = { title, des, banner, content, tags, draft: false };
-    const result = await createBlog(access_token, blogObj).catch((err) => {
+
+    const result = await createBlog(access_token, {
+      ...blogObj,
+      id: blog_id,
+    }).catch((err) => {
       toast.error("failed");
       console.log(err.message);
     });

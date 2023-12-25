@@ -182,8 +182,9 @@ export async function getUserProfile({ username }) {
 }
 
 //getting gull blog for reading it
-export async function getBlog({ blog_id }) {
-  let incrementalVal = 1;
+export async function getBlog({ blog_id, mode, draft }) {
+  let incrementalVal = mode != "edit" ? 1 : 0;
+
   const result = await Blog.findOneAndUpdate(
     { blog_id },
     { $inc: { "activity.total_reads": incrementalVal } }
@@ -210,6 +211,14 @@ export async function getBlog({ blog_id }) {
           };
         });
 
+      if (blog.draft && !draft) {
+        return {
+          status: 500,
+          message: "You can't access drafted blogs",
+          error:
+            "You cannot access a drafted blog to edit by using this method",
+        };
+      }
       if (readUpdateResult.status == 200) {
         return { status: 200, blog };
       } else {
