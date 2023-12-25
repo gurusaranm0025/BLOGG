@@ -169,3 +169,49 @@ export async function getUserProfile({ username }) {
 
   return result;
 }
+
+//getting gull blog for reading it
+export async function getBlog({ blog_id }) {
+  let incrementalVal = 1;
+  const result = await Blog.findOneAndUpdate(
+    { blog_id },
+    { $inc: { "activity.total_reads": incrementalVal } }
+  )
+    .populate(
+      "author",
+      "personal_info.fullname personal_info.username personal_info,profile_img"
+    )
+    .lean()
+    .select("title des content banner activity publishedAt blog_id tags")
+    .then(async (blog) => {
+      const readUpdateResult = await User.findOneAndUpdate(
+        { "personal_info.username": blog.author.personal_info.username },
+        { $inc: { "account_info.total_reads": incrementalVal } }
+      )
+        .then(() => {
+          return { status: 200 };
+        })
+        .catch((err) => {
+          return {
+            status: 500,
+            message: "Can't connect to the server",
+            error: err.message,
+          };
+        });
+
+      if (readUpdateResult.status == 200) {
+        return { status: 200, blog };
+      } else {
+        return readUpdateResult;
+      }
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Can't connect to the server",
+        error: err.message,
+      };
+    });
+
+  return result;
+}
