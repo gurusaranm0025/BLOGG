@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 //schema
 import User from "@/Schema/User";
 import Blog from "@/Schema/Blog";
+import jwt from "jsonwebtoken";
 
 mongoose.connect(process.env.DB_LOCATION, { autoIndex: true });
 
@@ -234,4 +235,29 @@ export async function getBlog({ blog_id, mode, draft }) {
     });
 
   return result;
+}
+
+//like blogs
+export async function likeBlog({ token }) {
+  const tokenResult = jwt.verify(
+    token,
+    process.env.SECRET_ACCESS_KEY,
+    (err, user) => {
+      if (err) {
+        return {
+          status: 500,
+          message: "Access token is invalid",
+          error: err.message,
+        };
+      }
+      return { status: 200, message: "Token is valid", id: user.id };
+    }
+  );
+
+  if ((tokenResult.status = 200)) {
+    authorId = tokenResult.id;
+  } else {
+    console.log(tokenResult);
+    return tokenResult;
+  }
 }

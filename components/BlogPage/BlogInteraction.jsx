@@ -1,14 +1,12 @@
 import { useContext } from "react";
 import { BlogContext } from "./BlogPage";
-import {
-  ChatBubbleBottomCenterIcon,
-  HeartIcon,
-} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { UserContext } from "@/common/ContextProvider";
+import toast, { Toaster } from "react-hot-toast";
 
 function BlogInteraction() {
   let {
+    blog,
     blog: {
       blog_id,
       title,
@@ -19,25 +17,53 @@ function BlogInteraction() {
       },
     },
     setBlog,
+    isLikedByUser,
+    setIsLikedByUser,
   } = useContext(BlogContext);
 
   let {
-    userAuth: { username },
+    userAuth: { username, access_token },
   } = useContext(UserContext);
+
+  function handleLike(e) {
+    if (access_token) {
+      //like the blog
+      setIsLikedByUser((preVal) => !preVal);
+      !isLikedByUser ? total_likes++ : total_likes--;
+      setBlog({ ...blog, activity: { ...activity, total_likes } });
+    } else {
+      //not logged in
+      toast.error("Sign in to like this blog");
+    }
+  }
 
   return (
     <>
+      <Toaster />
       <hr className="border-cadet-gray/50 my-2 " />
       <div className="flex gap-6 justify-between">
         <div className="flex gap-3 items-center">
-          <button className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/80">
-            <HeartIcon className="w-[1.5rem]" />
+          <button
+            className={
+              "w-10 h-10 flex items-center rounded-full justify-center " +
+              (isLikedByUser ? "bg-red-300/50 " : "bg-gray-300/50 ")
+            }
+            onClick={handleLike}
+          >
+            <i
+              className={
+                "fa-heart text-xl " +
+                (isLikedByUser
+                  ? "fa-solid text-red-600/80 "
+                  : "fa-regular text-gunmetal-2 ")
+              }
+            ></i>
           </button>
 
           <p className="text-lg text-gunmetal">{total_likes}</p>
 
-          <button className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/80">
-            <ChatBubbleBottomCenterIcon className="w-[1.5rem]" />
+          <button className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/50">
+            <i class="fa-regular fa-comments text-lg text-gunmetal-2"></i>
           </button>
 
           <p className="text-lg text-gunmetal">{total_comments}</p>
