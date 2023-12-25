@@ -1,13 +1,16 @@
-import { useContext } from "react";
+"use client";
+import { useContext, useEffect } from "react";
 import { BlogContext } from "./BlogPage";
 import Link from "next/link";
 import { UserContext } from "@/common/ContextProvider";
 import toast, { Toaster } from "react-hot-toast";
+import { getIsLikedByUser, likeBlog } from "@/server/fetchBlogs";
 
 function BlogInteraction() {
   let {
     blog,
     blog: {
+      _id,
       blog_id,
       title,
       activity,
@@ -25,12 +28,31 @@ function BlogInteraction() {
     userAuth: { username, access_token },
   } = useContext(UserContext);
 
+  useEffect(() => {
+    if (access_token) {
+      //make request to server to check whether the user has liked the post or not
+      getIsLikedByUser({ token: access_token, _id })
+        .then((data) => {
+          if (data.status == 200) {
+            setIsLikedByUser(Boolean(data.result));
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, []);
+
   function handleLike(e) {
     if (access_token) {
       //like the blog
       setIsLikedByUser((preVal) => !preVal);
       !isLikedByUser ? total_likes++ : total_likes--;
       setBlog({ ...blog, activity: { ...activity, total_likes } });
+
+      likeBlog({ token: access_token, _id, isLikedByUser }).then((data) =>
+        console.log(data)
+      );
     } else {
       //not logged in
       toast.error("Sign in to like this blog");
@@ -63,7 +85,7 @@ function BlogInteraction() {
           <p className="text-lg text-gunmetal">{total_likes}</p>
 
           <button className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/50">
-            <i class="fa-regular fa-comments text-lg text-gunmetal-2"></i>
+            <i className="fa-regular fa-comments text-lg text-gunmetal-2"></i>
           </button>
 
           <p className="text-lg text-gunmetal">{total_comments}</p>

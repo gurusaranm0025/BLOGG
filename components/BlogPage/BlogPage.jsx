@@ -142,7 +142,11 @@ function BlogPage({ blogId }) {
                       key={i}
                       transition={{ duration: 1, delay: i * 0.08 }}
                     >
-                      <BlogPostCard content={Blog} author={personal_info} />
+                      <BlogPostCard
+                        key={i}
+                        content={Blog}
+                        author={personal_info}
+                      />
                     </AnimationWrapper>
                   );
                 })}

@@ -1,10 +1,11 @@
 "use server";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
 //schema
 import User from "@/Schema/User";
 import Blog from "@/Schema/Blog";
-import jwt from "jsonwebtoken";
+import Notification from "@/Schema/Notification";
 
 mongoose.connect(process.env.DB_LOCATION, { autoIndex: true });
 
@@ -237,8 +238,7 @@ export async function getBlog({ blog_id, mode, draft }) {
   return result;
 }
 
-//like blogs
-export async function likeBlog({ token }) {
+export async function tokenVerify({ token }) {
   const tokenResult = jwt.verify(
     token,
     process.env.SECRET_ACCESS_KEY,
@@ -254,10 +254,116 @@ export async function likeBlog({ token }) {
     }
   );
 
+  return tokenResult;
+}
+
+//like blogs
+export async function likeBlog({ token, _id, isLikedByUser }) {
+  let user_id;
+
+  const tokenResult = await tokenVerify({ token });
+
+  // const tokenResult = jwt.verify(
+  //   token,
+  //   process.env.SECRET_ACCESS_KEY,
+  //   (err, user) => {
+  //     if (err) {
+  //       return {
+  //         status: 500,
+  //         message: "Access token is invalid",
+  //         error: err.message,
+  //       };
+  //     }
+  //     return { status: 200, message: "Token is valid", id: user.id };
+  //   }
+  // );
+
   if ((tokenResult.status = 200)) {
-    authorId = tokenResult.id;
+    user_id = tokenResult.id;
   } else {
     console.log(tokenResult);
     return tokenResult;
   }
+
+  let incrementalVal = !isLikedByUser ? 1 : -1;
+
+  const result = await Blog.findOneAndUpdate(
+    { _id },
+    { $inc: { "activity.total_likes": incrementalVal } }
+  ).then(async (blog) => {
+    if (!isLikedByUser) {
+      let like = new Notification({
+        type: "like",
+        blog: _id,
+        notification_for: blog.author,
+        user: user_id,
+      });
+
+      const likeNotificationResult = await like
+        .save()
+        .then((notification) => {
+          return { status: 200, likedByUser: true };
+        })
+        .catch((err) => {
+          return {
+            status: 500,
+            message: "Can't connect to the server",
+            error: err.message,
+          };
+        });
+
+      return likeNotificationResult;
+    } else {
+      const dislikeResult = await Notification.findOneAndDelete({
+        user: user_id,
+        blog: _id,
+        type: "like",
+      })
+        .then((data) => {
+          return { status: 200, likedByUser: false };
+        })
+        .catch((err) => {
+          return {
+            status: 500,
+            message: "Can't connect to the server",
+            error: err.message,
+          };
+        });
+
+      return dislikeResult;
+    }
+  });
+
+  return result;
+}
+
+//check if the post is liked by the user
+export async function getIsLikedByUser({ token, _id }) {
+  let user_id;
+  const tokenResult = await tokenVerify({ token });
+
+  if ((tokenResult.status = 200)) {
+    user_id = tokenResult.id;
+  } else {
+    console.log(tokenResult);
+    return tokenResult;
+  }
+
+  const result = await Notification.exists({
+    user: user_id,
+    type: "like",
+    blog: _id,
+  })
+    .then((response) => {
+      return { status: 200, result: response };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Can't connect to the server",
+        error: err.message,
+      };
+    });
+
+  return result;
 }
