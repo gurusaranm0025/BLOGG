@@ -115,7 +115,7 @@ function BlogPage({ blogId }) {
               {content[0].blocks.map((block, i) => {
                 return (
                   <div className="my-4 md:my-8">
-                    <BlogContent block={block} />
+                    <BlogContent key={i} block={block} />
                   </div>
                 );
               })}
