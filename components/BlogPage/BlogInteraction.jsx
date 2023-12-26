@@ -22,6 +22,7 @@ function BlogInteraction() {
     setBlog,
     isLikedByUser,
     setIsLikedByUser,
+    setCommentsWrapper,
   } = useContext(BlogContext);
 
   let {
@@ -84,7 +85,10 @@ function BlogInteraction() {
 
           <p className="text-lg text-gunmetal">{total_likes}</p>
 
-          <button className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/50">
+          <button
+            className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/50"
+            onClick={() => setCommentsWrapper((curVal) => !curVal)}
+          >
             <i className="fa-regular fa-comments text-lg text-gunmetal-2"></i>
           </button>
 
