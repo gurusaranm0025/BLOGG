@@ -17,3 +17,4 @@ function CommentField({ action }) {
 }
 
 export default CommentField;
+import React from "react";
