@@ -5,13 +5,19 @@ import { useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BlogContext } from "../BlogPage/BlogPage";
 
-function CommentField({ action }) {
+function CommentField({
+  action,
+  index = undefined,
+  replyingTo = undefined,
+  setReplying,
+}) {
   let {
     blog,
     blog: {
       _id,
       author: { _id: blog_author },
       comments,
+      comments: { results: commentsArr },
       activity,
       activity: { total_comments, total_parent_comments },
     },
@@ -32,7 +38,13 @@ function CommentField({ action }) {
       return toast.error("Write something to comment.");
     }
 
-    addComment({ token: access_token, _id, blog_author, comment })
+    addComment({
+      token: access_token,
+      _id,
+      blog_author,
+      comment,
+      replying_to: replyingTo,
+    })
       .then((response) => {
         setComment("");
         response.commented_by = {
@@ -41,11 +53,24 @@ function CommentField({ action }) {
 
         let newCommentArr;
 
-        response.childrenLevel = 0;
+        if (replyingTo) {
+          commentsArr[index].children.push(response._id);
+          response.childrenLevel = commentsArr[index].childrenLevel + 1;
+          response.parentIndex = index;
+          commentsArr[index].isReplyLoaded = true;
 
-        newCommentArr = [response];
+          commentsArr.splice(index + 1, 0, response);
 
-        let parentCommentIncrementVal = 1;
+          newCommentArr = commentsArr;
+
+          setReplying(false);
+        } else {
+          response.childrenLevel = 0;
+
+          newCommentArr = [response, ...commentsArr];
+        }
+
+        let parentCommentIncrementVal = replyingTo ? 0 : 1;
 
         setBlog({
           ...blog,

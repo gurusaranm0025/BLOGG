@@ -377,7 +377,7 @@ export async function addComment({
   blog_author,
 }) {
   let user_id;
-  const tokenResult = tokenVerify({ token });
+  const tokenResult = await tokenVerify({ token });
 
   if ((tokenResult.status = 200)) {
     user_id = tokenResult.id;
@@ -395,57 +395,140 @@ export async function addComment({
   }
 
   //creating a comment doc
-  let commentObj = new Comment({
+  let commentObj = {
     blog_id: _id,
     blog_author,
     comment,
     commented_by: user_id,
-  });
+  };
 
-  const result = await commentObj.save().then((commentFile) => {
-    let { comment, commentedAt, children } = commentFile;
+  if (replying_to) {
+    commentObj.parent = replying_to;
+    commentObj.isReply = true;
+  }
 
-    Blog.findByIdAndUpdate(
-      { _id },
-      {
-        $push: { comments: commentFile._id },
-        $inc: { "activity.total_comments": 1 },
-        "activity.total_parent_comments": 1,
+  const result = await new Comment(commentObj)
+    .save()
+    .then(async (commentFile) => {
+      let { comment, commentedAt, children } = commentFile;
+
+      await Blog.findByIdAndUpdate(
+        { _id },
+        {
+          $push: { comments: commentFile._id },
+          $inc: { "activity.total_comments": 1 },
+          $inc: { "activity.total_parent_comments": replying_to ? 0 : 1 },
+        }
+      )
+        .then(() => {
+          console.log("New comment created.");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+      let notificationObj = {
+        type: replying_to ? "reply" : "comment",
+        blog: _id,
+        notification_for: blog_author,
+        user: user_id,
+        comment: commentFile._id,
+      };
+
+      if (replying_to) {
+        notificationObj.replied_on_comment = replying_to;
+
+        await Comment.findOneAndUpdate(
+          { _id: replying_to },
+          { $push: { children: commentFile._id } }
+        ).then((replyingToCommentDoc) => {
+          notificationObj.notification_for = replyingToCommentDoc.commented_by;
+        });
       }
+
+      await new Notification(notificationObj)
+        .save()
+        .then((notification) => {
+          console.log("new notification created");
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
+
+      return {
+        status: 200,
+        comment,
+        commentedAt,
+        _id: commentFile._id,
+        user_id,
+        children,
+      };
+    });
+
+  return result;
+}
+
+//fetching comments for a particular blog
+export async function getBlogComments({ blog_id, skip }) {
+  let maxLimit = 5;
+
+  const result = await Comment.find({ blog_id, isReply: false })
+    .populate(
+      "commented_by",
+      "personal_info.username personal_info.fullname personal_info.profile_img"
     )
-      .then(() => {
-        console.log("New comment created.");
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    .lean()
+    .skip(skip)
+    .limit(maxLimit)
+    .sort({ commentedAt: -1 })
+    .then((comments) => {
+      return { status: 200, comments };
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return {
+        status: 500,
+        message: "Can't connect to the server",
+        error: err.message,
+      };
+    });
 
-    let notificationObj = {
-      type: "comment",
-      blog: _id,
-      notification_for: blog_author,
-      user: user_id,
-      comment: commentFile._id,
-    };
+  return result;
+}
 
-    new Notification(notificationObj)
-      .save()
-      .then((notification) => {
-        console.log("new notification created");
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
+export async function getReplies({ _id, skip }) {
+  let maxLimit = 5;
 
-    return {
-      status: 200,
-      comment,
-      commentedAt,
-      _id: commentFile._id,
-      user_id,
-      children,
-    };
-  });
+  const result = Comment.findOne({ _id })
+    .populate({
+      path: "children",
+      option: {
+        lean: true,
+        limit: maxLimit,
+        skip: skip,
+        sort: { commentedAt: -1 },
+      },
+      populate: {
+        path: "commented_by",
+        option: { lean: true },
+        select:
+          "personal_info.profile_img personal_info.username personal_info.fullname",
+      },
+      select: "-blog_id -updatedAt",
+    })
+    .lean()
+    .select("children")
+    .then((doc) => {
+      return { status: 200, replies: doc.children };
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return {
+        status: 500,
+        message: "Can't connect to server",
+        error: err.message,
+      };
+    });
 
   return result;
 }
