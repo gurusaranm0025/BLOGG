@@ -5,12 +5,13 @@ import { UserContext } from "@/common/ContextProvider";
 import toast, { Toaster } from "react-hot-toast";
 import CommentField from "./CommentField";
 import { BlogContext } from "../BlogPage/BlogPage";
-import { getReplies } from "@/server/fetchBlogs";
+import { deleteComment, getReplies } from "@/server/fetchBlogs";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 function CommentCard({ index, leftVal, commentData }) {
   let {
     commented_by: {
-      personal_info: { profile_img, username, fullname },
+      personal_info: { profile_img, username: commented_by_username, fullname },
     },
     commentedAt,
     comment,
@@ -19,19 +20,39 @@ function CommentCard({ index, leftVal, commentData }) {
   } = commentData;
 
   let {
-    userAuth: { access_token },
+    userAuth: { access_token, username },
   } = useContext(UserContext);
 
   let {
     blog,
     blog: {
       comments,
+      activity,
+      activity: { total_parent_comments },
       comments: { results: commentsArr },
+      author: {
+        personal_info: { username: author_username },
+      },
     },
     setBlog,
+    setTotalParentCommentsLoaded,
   } = useContext(BlogContext);
 
   const [isReplying, setIsReplying] = useState(false);
+
+  function getParentIndex() {
+    let startingPoint = index - 1;
+
+    try {
+      while (
+        commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel
+      ) {
+        startingPoint--;
+      }
+    } catch {
+      startingPoint = undefined;
+    }
+  }
 
   function handleReply() {
     if (!access_token) {
@@ -41,7 +62,7 @@ function CommentCard({ index, leftVal, commentData }) {
     setIsReplying((preVal) => !preVal);
   }
 
-  function removeCommentCard(startingPoint) {
+  function removeCommentCard(startingPoint, isDelete = false) {
     if (commentsArr[startingPoint]) {
       while (
         commentsArr[startingPoint].childrenLevel > commentData.childrenLevel
@@ -54,7 +75,37 @@ function CommentCard({ index, leftVal, commentData }) {
       }
     }
 
-    setBlog({ ...blog, comments: { results: commentsArr } });
+    if (isDelete) {
+      let parentIndex = getParentIndex();
+
+      if (parentIndex != undefined) {
+        commentsArr[parentIndex].children = commentsArr[
+          parentIndex
+        ].children.filter((child) => child != _id);
+
+        if (commentsArr[parentIndex].children.length) {
+          commentsArr[parentIndex].isReplyLoaded = false;
+        }
+      }
+
+      commentsArr.splice(index, 1);
+    }
+
+    if (commentData.childrenLevel == 0 && isDelete) {
+      setTotalParentCommentsLoaded((preVal) => preVal - 1);
+    }
+
+    setBlog({
+      ...blog,
+      comments: { results: commentsArr },
+      activity: {
+        ...activity,
+        total_parent_comments:
+          total_parent_comments - commentData.childrenLevel == 0 && isDelete
+            ? 1
+            : 0,
+      },
+    });
   }
 
   function handleHideReplies() {
@@ -69,7 +120,6 @@ function CommentCard({ index, leftVal, commentData }) {
 
       getReplies({ _id, skip })
         .then((response) => {
-          console.log(response);
           commentData.isReplyLoaded = true;
 
           for (let i = 0; i < response.replies.length; i++) {
@@ -86,6 +136,21 @@ function CommentCard({ index, leftVal, commentData }) {
     }
   }
 
+  function handleDeleteComment(e) {
+    e.target.setAttribute("disable", true);
+
+    deleteComment({ _id, token: access_token })
+      .then(() => {
+        e.target.removeAttribute("disable");
+        removeCommentCard(index + 1, true);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    console.log("click");
+  }
+
   return (
     <div className="w-full" style={{ paddingLeft: `${leftVal * 10}px` }}>
       <div className="my-5 p-6 rounded-md border border-gray-300/50 ">
@@ -97,7 +162,7 @@ function CommentCard({ index, leftVal, commentData }) {
           />
 
           <p className="line-clamp-1">
-            {fullname} @{username}
+            {fullname} @{commented_by_username}
           </p>
           <p className="min-w-fit">{getDay(commentedAt)}</p>
         </div>
@@ -124,6 +189,17 @@ function CommentCard({ index, leftVal, commentData }) {
           <button className="underline" onClick={handleReply}>
             reply
           </button>
+
+          {username == commented_by_username || username == author_username ? (
+            <button
+              className="group duration-200 p-3 px-3 rounded-md border border-gray-300 ml-auto hover:bg-red-500/30 flex items-center "
+              onClick={handleDeleteComment}
+            >
+              <i class="fa-solid fa-trash group-hover:text-red-500 duration-200"></i>
+            </button>
+          ) : (
+            ""
+          )}
         </div>
 
         {isReplying ? (

@@ -532,3 +532,75 @@ export async function getReplies({ _id, skip }) {
 
   return result;
 }
+
+//delete comments functions
+function deleteComments(_id) {
+  Comment.findOneAndDelete({ _id })
+    .then((comment) => {
+      if (comment.parent) {
+        Comment.findOneAndUpdate(
+          { _id: comment.parent },
+          { $pull: { children: _id } }
+        )
+          .then((data) => {
+            console.log("COmment is deleted from parent");
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+      }
+
+      Notification.findOneAndDelete({ comment: _id }).then((notification) =>
+        console.log("comment's notification is deleted")
+      );
+
+      Notification.findOneAndDelete({ reply: _id }).then((notification) =>
+        console.log("reply's notification is deleted")
+      );
+
+      Blog.findOneAndUpdate(
+        { _id: comment.blog_id },
+        {
+          $pull: { comments: _id },
+          $inc: { "activity.total_comments": -1 },
+          $inc: { "activity.total_parent_comments": comment.parent ? 0 : -1 },
+        }
+      ).then((blog) => {
+        if (comment.children.length) {
+          comment.children.map((replies) => {
+            deleteComments(replies);
+          });
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+}
+
+//deleting comment with all of its replies
+export async function deleteComment({ token, _id }) {
+  let user_id;
+  const tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    console.log(tokenResult);
+    return tokenResult;
+  }
+  const result = await Comment.find({ _id }).then((comment) => {
+    if (user_id == comment.commented_by || user_id == comment.blog_author) {
+      deleteComments(_id);
+    } else {
+      return {
+        status: 500,
+        message: "You can't delete this comment or reply",
+        error:
+          "Only the author of the comment or reply or the author of the blog is allowed to delete.",
+      };
+    }
+  });
+
+  return result;
+}
