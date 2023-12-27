@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import User from "@/Schema/User";
 import Blog from "@/Schema/Blog";
 import Notification from "@/Schema/Notification";
+import Comment from "@/Schema/Comment";
 
 mongoose.connect(process.env.DB_LOCATION, { autoIndex: true });
 
@@ -364,6 +365,87 @@ export async function getIsLikedByUser({ token, _id }) {
         error: err.message,
       };
     });
+
+  return result;
+}
+
+export async function addComment({
+  token,
+  _id,
+  comment,
+  replying_to,
+  blog_author,
+}) {
+  let user_id;
+  const tokenResult = tokenVerify({ token });
+
+  if ((tokenResult.status = 200)) {
+    user_id = tokenResult.id;
+  } else {
+    console.log(tokenResult);
+    return tokenResult;
+  }
+
+  if (!comment.length) {
+    return {
+      status: 500,
+      message: "Write something to comment.",
+      error: "Sorry, we cannot send empty message as comments.",
+    };
+  }
+
+  //creating a comment doc
+  let commentObj = new Comment({
+    blog_id: _id,
+    blog_author,
+    comment,
+    commented_by: user_id,
+  });
+
+  const result = await commentObj.save().then((commentFile) => {
+    let { comment, commentedAt, children } = commentFile;
+
+    Blog.findByIdAndUpdate(
+      { _id },
+      {
+        $push: { comments: commentFile._id },
+        $inc: { "activity.total_comments": 1 },
+        "activity.total_parent_comments": 1,
+      }
+    )
+      .then(() => {
+        console.log("New comment created.");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    let notificationObj = {
+      type: "comment",
+      blog: _id,
+      notification_for: blog_author,
+      user: user_id,
+      comment: commentFile._id,
+    };
+
+    new Notification(notificationObj)
+      .save()
+      .then((notification) => {
+        console.log("new notification created");
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+
+    return {
+      status: 200,
+      comment,
+      commentedAt,
+      _id: commentFile._id,
+      user_id,
+      children,
+    };
+  });
 
   return result;
 }
