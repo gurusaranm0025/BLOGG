@@ -589,9 +589,11 @@ export async function deleteComment({ token, _id }) {
     console.log(tokenResult);
     return tokenResult;
   }
-  const result = await Comment.find({ _id }).then((comment) => {
+
+  const result = await Comment.findOne({ _id }).then((comment) => {
     if (user_id == comment.commented_by || user_id == comment.blog_author) {
       deleteComments(_id);
+      return { status: 200, message: "The comment or message is deleted" };
     } else {
       return {
         status: 500,
