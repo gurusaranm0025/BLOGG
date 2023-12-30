@@ -1,9 +1,8 @@
-import NavBar from "@/components/NavBar/NavBar";
+import SideNav from "@/components/Settings/SideNav";
 
 function page() {
   return (
     <div>
-      <NavBar />
       <SideNav />
     </div>
   );

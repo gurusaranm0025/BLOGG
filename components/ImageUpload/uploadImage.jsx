@@ -1,6 +1,6 @@
 "use client";
 
-import { storageRef } from "@/common/firebase";
+import { storageRef } from "@/firebase/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { nanoid } from "nanoid";
 

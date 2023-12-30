@@ -12,7 +12,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
 import { UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
-import { authWithGoogle } from "@/common/firebase";
+import { authWithGoogle } from "@/firebase/GoogleAuth";
 
 function page({ params }) {
   const router = useRouter();
