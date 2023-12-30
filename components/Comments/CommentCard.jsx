@@ -6,7 +6,6 @@ import toast, { Toaster } from "react-hot-toast";
 import CommentField from "./CommentField";
 import { BlogContext } from "../BlogPage/BlogPage";
 import { deleteComment, getReplies } from "@/server/fetchBlogs";
-import { TrashIcon } from "@heroicons/react/24/outline";
 
 function CommentCard({ index, leftVal, commentData }) {
   let {
@@ -52,6 +51,8 @@ function CommentCard({ index, leftVal, commentData }) {
     } catch {
       startingPoint = undefined;
     }
+
+    return startingPoint;
   }
 
   function handleReply() {
@@ -115,18 +116,23 @@ function CommentCard({ index, leftVal, commentData }) {
     removeCommentCard(index + 1);
   }
 
-  function handleLoadReplies({ skip = 0 }) {
-    if (children.length) {
+  function handleLoadReplies({ skip = 0, currentIndex = index }) {
+    if (commentsArr[currentIndex].children.length) {
       handleHideReplies();
 
-      getReplies({ _id, skip })
+      getReplies({ _id: commentsArr[currentIndex]._id, skip })
         .then((response) => {
-          commentData.isReplyLoaded = true;
+          commentsArr[currentIndex].isReplyLoaded = true;
 
           for (let i = 0; i < response.replies.length; i++) {
-            response.replies[i].childrenLevel = commentData.childrenLevel + 1;
+            response.replies[i].childrenLevel =
+              commentsArr[currentIndex].childrenLevel + 1;
 
-            commentsArr.splice(index + 1 + i + skip, 0, response.replies[i]);
+            commentsArr.splice(
+              currentIndex + 1 + i + skip,
+              0,
+              response.replies[i]
+            );
           }
 
           setBlog({ ...blog, comments: { ...comments, results: commentsArr } });
@@ -150,6 +156,40 @@ function CommentCard({ index, leftVal, commentData }) {
       });
 
     console.log("click");
+  }
+
+  function LoadMoreRepliesBtn() {
+    let parentIndex = getParentIndex();
+
+    let button = (
+      <button
+        onClick={() =>
+          handleLoadReplies({
+            skip: index - parentIndex,
+            currentIndex: parentIndex,
+          })
+        }
+        className="text-cadet-gray p-2 px-3 hover:bg-gray-300/30 rounded-md flex items-center gap-2"
+      >
+        Load more replies
+      </button>
+    );
+
+    if (commentsArr[index + 1]) {
+      if (
+        commentsArr[index + 1].childrenLevel < commentsArr[index].childrenLevel
+      ) {
+        if (index - parentIndex < commentsArr[parentIndex].children.length) {
+          return button;
+        }
+      }
+    } else {
+      if (parentIndex) {
+        if (index - parentIndex < commentsArr[parentIndex].children.length) {
+          return button;
+        }
+      }
+    }
   }
 
   return (
@@ -216,6 +256,8 @@ function CommentCard({ index, leftVal, commentData }) {
           ""
         )}
       </div>
+
+      <LoadMoreRepliesBtn />
     </div>
   );
 }

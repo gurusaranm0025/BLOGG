@@ -504,7 +504,7 @@ export async function getReplies({ _id, skip }) {
   const result = Comment.findOne({ _id })
     .populate({
       path: "children",
-      option: {
+      options: {
         lean: true,
         limit: maxLimit,
         skip: skip,
