@@ -1,11 +1,7 @@
 import SideNav from "@/components/Settings/SideNav";
 
 function page() {
-  return (
-    <div>
-      <SideNav />
-    </div>
-  );
+  return <div>set</div>;
 }
 
 export default page;

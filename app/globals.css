@@ -76,11 +76,11 @@
   }
 
   .sidebar-link {
-    @apply flex gap-4 items-center py-5 text-dark-grey hover:text-black;
+    @apply flex gap-4 items-center py-5 text-gray-700 hover:text-black duration-150;
   }
 
-  .sidebar-link.active {
-    @apply text-black border-r-2 border-black pl-6 bg-grey/50 -ml-6 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
+  .sidebar-link-active {
+    @apply text-black border-r-2 border-black pl-6 bg-gray-300/50 -ml-6 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
   }
 
   #textEditor h2,

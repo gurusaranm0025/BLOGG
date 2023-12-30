@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import Providers from "@/common/ContextProvider";
 import NavBar from "@/components/NavBar/NavBar";
+import SideNav from "@/components/Settings/SideNav";
 
 export const metadata = {
   title: "Create Next App",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
       <Providers>
         <body>
           <NavBar />
+          <SideNav />
           {children}
         </body>
       </Providers>

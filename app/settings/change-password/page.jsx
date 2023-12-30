@@ -1,5 +1,7 @@
+import SideNav from "@/components/Settings/SideNav";
+
 function page() {
-  return <div>change passs</div>;
+  return <div></div>;
 }
 
 export default page;
