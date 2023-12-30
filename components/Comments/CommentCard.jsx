@@ -28,7 +28,7 @@ function CommentCard({ index, leftVal, commentData }) {
     blog: {
       comments,
       activity,
-      activity: { total_parent_comments },
+      activity: { total_comments, total_parent_comments },
       comments: { results: commentsArr },
       author: {
         personal_info: { username: author_username },
@@ -100,6 +100,7 @@ function CommentCard({ index, leftVal, commentData }) {
       comments: { results: commentsArr },
       activity: {
         ...activity,
+        total_comments: total_comments - 1,
         total_parent_comments:
           total_parent_comments - commentData.childrenLevel == 0 && isDelete
             ? 1

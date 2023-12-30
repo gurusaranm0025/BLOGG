@@ -416,8 +416,10 @@ export async function addComment({
         { _id },
         {
           $push: { comments: commentFile._id },
-          $inc: { "activity.total_comments": 1 },
-          $inc: { "activity.total_parent_comments": replying_to ? 0 : 1 },
+          $inc: {
+            "activity.total_comments": 1,
+            "activity.total_parent_comments": replying_to ? 0 : 1,
+          },
         }
       )
         .then(() => {
@@ -562,8 +564,10 @@ function deleteComments(_id) {
         { _id: comment.blog_id },
         {
           $pull: { comments: _id },
-          $inc: { "activity.total_comments": -1 },
-          $inc: { "activity.total_parent_comments": comment.parent ? 0 : -1 },
+          $inc: {
+            "activity.total_comments": -1,
+            "activity.total_parent_comments": comment.parent ? 0 : -1,
+          },
         }
       ).then((blog) => {
         if (comment.children.length) {
