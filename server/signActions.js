@@ -10,9 +10,12 @@ import jwt from "jsonwebtoken";
 import admin from "firebase-admin";
 import serviceAccountKey from "../bloom-blogging-firebase-adminsdk.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountKey),
-});
+let app =
+  admin.apps.length == 0
+    ? admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountKey),
+      })
+    : admin.apps[0];
 
 //Schema imports
 import User from "@/Schema/User.js";
@@ -155,7 +158,7 @@ async function credValidityCheck(type, username, email, password) {
 
 //Google Auth Function
 async function googleAuth(access_token) {
-  const result = await getAuth()
+  const result = await getAuth(app)
     .verifyIdToken(access_token)
     .then(async (decodedUser) => {
       let { email, name, picture } = decodedUser;
