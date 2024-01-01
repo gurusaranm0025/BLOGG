@@ -334,3 +334,136 @@ export async function changePassword({ token, currentPassword, newPassword }) {
 
   return result;
 }
+
+//update profile image
+export async function updateProfileImage({ token, url }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    console.error(tokenResult);
+    return {
+      status: 500,
+      message: "Token is invalid",
+      error:
+        "This error means that your session is invalid or expired, try signing out anad signing in again",
+    };
+  }
+
+  const result = await User.findOneAndUpdate(
+    { _id: user_id },
+    { "personal_info.profile_img": url }
+  )
+    .then(() => {
+      return {
+        status: 200,
+        message: "Profile image is updated",
+        profile_img: url,
+      };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Error occurred while updating the image",
+        error: err.message,
+      };
+    });
+
+  return result;
+}
+
+//update profile
+export async function updateProfile({ token, username, bio, social_links }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    console.error(tokenResult);
+    return {
+      status: 500,
+      message: "Token is invalid",
+      error:
+        "This error means that your session is invalid or expired, try signing out anad signing in again",
+    };
+  }
+
+  if (!username.length || username.length < 4) {
+    return {
+      status: "500",
+      message: "Enter username with a minimum of 4 characters to continue.",
+      error: "Enter username with a minimum of 4 characters to continue.",
+    };
+  }
+
+  if (bio.length > 150) {
+    return {
+      status: "500",
+      message: "Bio should not contain more than 150 character",
+      error: "Bio should not contain more than 150 character",
+    };
+  }
+
+  let socialLinksArr = Object.keys(social_links);
+
+  try {
+    for (let i = 0; i < socialLinksArr.length; i++) {
+      if (social_links[socialLinksArr[i]].length) {
+        let hostname = new URL(social_links[socialLinksArr[i]]).hostname;
+
+        if (
+          !hostname.includes(`${socialLinksArr[i]}.com`) &&
+          socialLinksArr[i] != "website"
+        ) {
+          return {
+            status: 500,
+            message: `${socialLinksArr[i]} link is invalid`,
+            error:
+              "Invalid links are provided as input for social links field.",
+          };
+        }
+      }
+    }
+  } catch (err) {
+    return {
+      status: 500,
+      message: "You must provide full social links with 'https' included.",
+      error: "You must provide full social links with 'https' included.",
+    };
+  }
+
+  let updateObj = {
+    "personal_info.username": username,
+    "personal_info.bio": bio,
+    social_links,
+  };
+
+  const result = await User.findOneAndUpdate({ _id: user_id }, updateObj, {
+    runValidators: true,
+  })
+    .then((response) => {
+      return { status: 200, username };
+    })
+    .catch((err) => {
+      if (err.code == 11000) {
+        return {
+          status: 500,
+          message: "Username is already taken",
+          error: err.message,
+        };
+      } else {
+        return {
+          status: 500,
+          message: "Error occurred while updating the profile",
+          error: err.message,
+        };
+      }
+    });
+
+  return result;
+}

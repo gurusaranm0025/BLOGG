@@ -2,17 +2,22 @@
 
 import { profileDataStructure } from "@/app/user/[id]/page";
 import { UserContext } from "@/common/ContextProvider";
+import { storeInSession } from "@/common/session";
+import { uploadImage } from "@/components/ImageUpload/uploadImage";
 import Loader from "@/components/Loader/Loader";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import Input from "@/components/signMethod/Input";
 import { getUserProfile } from "@/server/fetchBlogs";
-import { useContext, useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
+import { updateProfile, updateProfileImage } from "@/server/signActions";
+import { useContext, useEffect, useRef, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 function page() {
   let bioLimit = 150;
   let {
+    userAuth,
     userAuth: { access_token, username },
+    setUserAuth,
   } = useContext(UserContext);
 
   const socialLinksImgSrc = {
@@ -27,6 +32,9 @@ function page() {
   const [profile, setProfile] = useState(profileDataStructure);
   const [loading, setLoading] = useState(true);
   const [charcLeft, setCharcLeft] = useState(bioLimit);
+  let profileImgElement = useRef();
+  let editProfileForm = useRef();
+  const [updatedProfileImg, setUpdatedProfileImg] = useState(null);
 
   let {
     personal_info: {
@@ -52,12 +60,134 @@ function page() {
     }
   }, [access_token]);
 
+  function imgPreviewHandler(e) {
+    let img = e.target.files[0];
+
+    profileImgElement.current.src = URL.createObjectURL(img);
+
+    setUpdatedProfileImg(img);
+  }
+
+  function imgUploadHandler(e) {
+    e.preventDefault();
+
+    if (updatedProfileImg) {
+      let loadingToast = toast.loading("Uploading...");
+      e.target.setAttribute("disabled", true);
+
+      uploadImage(updatedProfileImg, profile_username)
+        .then((url) => {
+          if (url) {
+            updateProfileImage({ token: access_token, url: url.url })
+              .then((data) => {
+                let newUserAuth = {
+                  ...userAuth,
+                  profile_img: data.profile_img,
+                };
+
+                storeInSession("user", JSON.stringify(newUserAuth));
+
+                setUserAuth(newUserAuth);
+
+                setUpdatedProfileImg(null);
+                toast.dismiss(loadingToast);
+                toast.success("Updated.");
+                e.target.removeAttribute("disabled");
+              })
+              .catch((err) => {
+                e.target.removeAttribute("disabled");
+                console.error(err.message);
+                toast.dismiss(loadingToast);
+                return toast.error(
+                  "Error occurred while updating the profile image"
+                );
+              });
+          }
+        })
+        .catch((err) => {
+          e.target.removeAttribute("disabled");
+          toast.dismiss(loadingToast);
+          console.error(err.message);
+          return toast.error("Error occurred while updating the profile image");
+        });
+    }
+  }
+
+  function submitHandler(e) {
+    e.preventDefault();
+
+    let form = new FormData(editProfileForm.current);
+    let formData = {};
+
+    for (let [key, value] of form.entries()) {
+      formData[key] = value;
+    }
+
+    let {
+      username,
+      bio,
+      twitter,
+      youtube,
+      facebook,
+      github,
+      instagram,
+      website,
+    } = formData;
+
+    if (username.length < 4) {
+      return toast.error(
+        "Enter username with a minimum of 4 characters to continue"
+      );
+    }
+
+    if (bio.length > bioLimit) {
+      return toast.error("Bio should not contain more than 150 character");
+    }
+
+    let loadingToast = toast.loading("Updating...");
+
+    e.target.setAttribute("disabled", true);
+
+    updateProfile({
+      token: access_token,
+      username,
+      bio,
+      social_links: { youtube, facebook, twitter, github, instagram, website },
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          if (userAuth.username != response.username) {
+            let newUserAuth = { ...userAuth, username: response.username };
+
+            storeInSession("user", JSON.stringify(newUserAuth));
+            setUserAuth(newUserAuth);
+          }
+
+          toast.dismiss(loadingToast);
+
+          e.target.removeAttribute("disabled");
+          return toast.success("Profile Updated successfully");
+        } else {
+          toast.dismiss(loadingToast);
+          console.log(response.error);
+          e.target.removeAttribute("disabled");
+          return toast.error(response.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        e.target.removeAttribute("disabled");
+        toast.dismiss(loadingToast);
+        return toast.error("Error occurred while updating your profile");
+      });
+  }
+
   return (
     <AnimationWrapper>
       {loading ? (
         <Loader />
       ) : (
-        <form>
+        <form ref={editProfileForm}>
           <Toaster />
 
           <h1 className="max-md:hidden">Edit Profile</h1>
@@ -73,6 +203,7 @@ function page() {
                   Upload Image
                 </div>
                 <img
+                  ref={profileImgElement}
                   className="pointer-events-none"
                   src={profile_img}
                   alt="profile-image"
@@ -83,9 +214,13 @@ function page() {
                 id="uploadImage"
                 accept=".jpeg, .png, .jpg"
                 hidden
+                onChange={imgPreviewHandler}
               />
 
-              <button className="btn-light mt-5 max-lg:center lg:w-full px-10  ">
+              <button
+                className="btn-light mt-5 max-lg:center lg:w-full px-10"
+                onClick={imgUploadHandler}
+              >
                 Upload
               </button>
             </div>
@@ -157,7 +292,11 @@ function page() {
                 })}
               </div>
 
-              <button className="btn-dark w-auto px-10" type="submit">
+              <button
+                className="btn-dark w-auto px-10 mt-5"
+                type="submit"
+                onClick={submitHandler}
+              >
                 Update
               </button>
             </div>
