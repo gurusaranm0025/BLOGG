@@ -25,8 +25,6 @@ function page() {
     }
 
     let { currentPassword, newPassword } = formData;
-    console.log("CP : ", currentPassword);
-    console.log("NP : ", newPassword);
 
     if (!currentPassword.length || !newPassword.length) {
       return toast.error("Fill all the inputs to continue");

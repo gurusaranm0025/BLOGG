@@ -9,7 +9,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
-function Input({ type, placeholder, name, id, value, icon, onChange }) {
+function Input({
+  type,
+  placeholder,
+  name,
+  id,
+  value,
+  icon,
+  iconVal,
+  onChange,
+  disabled = false,
+}) {
   const [passVisibility, setPassVisibilty] = useState(false);
 
   function visibilityHandler() {
@@ -17,13 +27,23 @@ function Input({ type, placeholder, name, id, value, icon, onChange }) {
   }
 
   const iconClasses =
-    "absolute z-10 left-4 bottom-1 -translate-y-1/2 w-[1.5rem]";
+    "absolute top-auto z-10 left-4 bottom-1 -translate-y-1/2 ";
   return (
-    <div className="relative flex z-0">
-      {icon === "user" && <UserIcon className={iconClasses} />}
-      {icon === "email" && <EnvelopeIcon className={iconClasses} />}
-      {icon === "key" && <KeyIcon className={iconClasses} />}
+    <div className="relative flex z-0 items-center">
+      {icon === "user" && <UserIcon className={iconClasses + "w-[1.5rem]"} />}
+      {icon === "email" && (
+        <EnvelopeIcon className={iconClasses + "w-[1.5rem]"} />
+      )}
+      {icon === "key" && <KeyIcon className={iconClasses + "w-[1.5rem]"} />}
+      {icon === "fa" && (
+        <i
+          className={
+            iconClasses + iconVal + " text-xl top-auto -translate-y-3/4"
+          }
+        ></i>
+      )}
       <input
+        disabled={disabled}
         type={
           type == "password" ? (passVisibility ? "text" : "password") : "text"
         }

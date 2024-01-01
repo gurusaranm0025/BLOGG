@@ -265,21 +265,6 @@ export async function likeBlog({ token, _id, isLikedByUser }) {
 
   const tokenResult = await tokenVerify({ token });
 
-  // const tokenResult = jwt.verify(
-  //   token,
-  //   process.env.SECRET_ACCESS_KEY,
-  //   (err, user) => {
-  //     if (err) {
-  //       return {
-  //         status: 500,
-  //         message: "Access token is invalid",
-  //         error: err.message,
-  //       };
-  //     }
-  //     return { status: 200, message: "Token is valid", id: user.id };
-  //   }
-  // );
-
   if ((tokenResult.status = 200)) {
     user_id = tokenResult.id;
   } else {
