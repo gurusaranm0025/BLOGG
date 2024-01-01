@@ -21,20 +21,3 @@ export default function Providers({ children }) {
     </UserContext.Provider>
   );
 }
-
-export let SettingsContext = createContext({});
-
-export function SettingsContextProviders({ children }) {
-  const [pageState, setPageState] = useState("");
-
-  return (
-    <SettingsContext.Provider
-      value={{
-        pageState,
-        setPageState,
-      }}
-    >
-      {children}
-    </SettingsContext.Provider>
-  );
-}

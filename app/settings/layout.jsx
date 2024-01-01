@@ -1,5 +1,5 @@
 import "@/app/globals.css";
-import Providers, { SettingsContextProviders } from "@/common/ContextProvider";
+import Providers from "@/common/ContextProvider";
 import NavBar from "@/components/NavBar/NavBar";
 import SideNav from "@/components/Settings/SideNav";
 
@@ -29,12 +29,10 @@ export default function RootLayout({ children }) {
         ></script>
       </head>
       <Providers>
-        <SettingsContextProviders>
-          <body>
-            <NavBar />
-            <SideNav>{children}</SideNav>
-          </body>
-        </SettingsContextProviders>
+        <body>
+          <NavBar />
+          <SideNav>{children}</SideNav>
+        </body>
       </Providers>
     </html>
   );

@@ -1,13 +1,13 @@
 "use server";
 
-// import "dotenv/config"
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
+import { tokenVerify } from "./fetchBlogs";
 
 //google auth
-import admin from "firebase-admin";
+import admin, { messaging } from "firebase-admin";
 import serviceAccountKey from "../bloom-blogging-firebase-adminsdk.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
 let app =
@@ -19,6 +19,7 @@ let app =
 
 //Schema imports
 import User from "@/Schema/User.js";
+import { resolve } from "styled-jsx/css";
 
 //regex
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
@@ -240,3 +241,96 @@ async function googleAuth(access_token) {
 }
 
 export { credValidityCheck, googleAuth };
+
+//change password
+export async function changePassword({ token, currentPassword, newPassword }) {
+  let user_id;
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return {
+      status: 500,
+      message: "Token is invalid",
+      error:
+        "This error means that your session is invalid or expired, try signing out anad signing in again",
+    };
+  }
+
+  if (
+    !passwordRegex.test(currentPassword) ||
+    !passwordRegex.test(newPassword)
+  ) {
+    return {
+      status: 500,
+      message:
+        "Password is invalid. Password must be 6 to 20 characters long with numbers and 1 lowercase and 1 uppercase letters.",
+      error:
+        "Password is invalid. Password must be 6 to 20 characters long with numbers and 1 lowercase and 1 uppercase letters.",
+    };
+  }
+
+  const result = await User.findOne({ _id: user_id })
+    .then(async (user) => {
+      if (user.google_auth) {
+        return {
+          status: 500,
+          message:
+            "You can't change the password of an account created using Google account",
+          error:
+            "Since you've used Google account to create your account, you can't change the password.",
+        };
+      }
+
+      let passCheckResult = await new Promise((resolve, reject) => {
+        bcrypt.compare(
+          currentPassword,
+          user.personal_info.password,
+          async (err, result) => {
+            if (err) {
+              resolve({
+                status: 500,
+                message: "Error occured while checking the current password.",
+                error:
+                  "It seems like our service had faced some error while checking your password. ",
+              });
+            }
+
+            if (!result) {
+              resolve({
+                status: 500,
+                error: "You current password is wrong",
+                message: "Your current password id wrong.",
+              });
+            }
+
+            bcrypt.hash(newPassword, 10, (err, hashedPass) => {
+              User.findOneAndUpdate(
+                { _id: user_id },
+                { "personal_info.password": hashedPass }
+              )
+                .then((user) => {
+                  resolve({ status: 200, message: "Password is changed" });
+                })
+                .catch((err) => {
+                  resolve({
+                    status: 500,
+                    message:
+                      "Error occurred while changing the password. Please, try again later",
+                    error: err.message,
+                  });
+                });
+            });
+          }
+        );
+      });
+
+      return passCheckResult;
+    })
+    .catch((err) => {
+      return { status: 500, message: "User not found", error: err.message };
+    });
+
+  return result;
+}

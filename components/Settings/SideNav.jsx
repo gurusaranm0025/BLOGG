@@ -1,18 +1,17 @@
 "use client";
-import { SettingsContext, UserContext } from "@/common/ContextProvider";
+import { UserContext } from "@/common/ContextProvider";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
 function SideNav({ children }) {
   const router = useRouter();
-  let { pageState, setPageState } = useContext(SettingsContext);
 
   let activeTabLine = useRef();
   let sideBarIconTab = useRef();
   let pageStateTab = useRef();
 
-  // const [pageState, setPageState] = useState(null);
+  const [pageState, setPageState] = useState("");
   let [showSideNav, setShowSideNav] = useState(false);
 
   useEffect(() => {
@@ -137,7 +136,7 @@ function SideNav({ children }) {
         </div>
       </div>
 
-      <div className="max-md:-mt-8 mt-5 w-full ">{children}</div>
+      <div className="max-md:-mt-8 md:pl-14 mt-5 w-full ">{children}</div>
     </section>
   );
 }
