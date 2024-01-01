@@ -28,7 +28,7 @@ function NavBar() {
   }
 
   return (
-    <nav className="navbar">
+    <nav className="navbar z-50">
       <Link href="/">
         <Logo />
       </Link>
