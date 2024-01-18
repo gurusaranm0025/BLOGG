@@ -40,6 +40,8 @@ export async function getLatestBlogs(page = 1) {
 
 //latest blogs count
 export async function blogsCount({ route, category }) {
+  console.log("Category : ", category);
+  let result;
   let findQuery;
   if (route == "latest") {
     findQuery = { draft: false };
@@ -47,20 +49,26 @@ export async function blogsCount({ route, category }) {
     findQuery = { draft: false, tags: category.tag };
   } else if (route == "searchByQuery") {
     findQuery = { draft: false, title: new RegExp(category.query, "i") };
+  } else if (route == "notifications") {
+    result = await allNotificationCount({
+      token: category.user,
+      filter: category.filter,
+    });
   }
 
-  let result = await Blog.countDocuments(findQuery)
-    .then((count) => {
-      return { status: 200, totalDocs: count };
-    })
-    .catch((err) => {
-      return {
-        status: 500,
-        message: "CAn't connect to the server",
-        error: err.message,
-      };
-    });
-
+  if (route != "notifications") {
+    result = await Blog.countDocuments(findQuery)
+      .then((count) => {
+        return { status: 200, totalDocs: count };
+      })
+      .catch((err) => {
+        return {
+          status: 500,
+          message: "Can't connect to the server",
+          error: err.message,
+        };
+      });
+  }
   return result;
 }
 
@@ -629,6 +637,106 @@ export async function newNotification({ token }) {
         message: "Failed to see the number of notifications.",
       };
     });
+
+  return result;
+}
+
+export async function getNotifications({
+  token,
+  page,
+  filter,
+  deletedDocCount,
+}) {
+  let user_id;
+  let maxLimit = 10;
+
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return tokenResult;
+  }
+
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+  let skipDocs = (page - 1) * maxLimit;
+
+  if (filter != "all") {
+    findQuery.type = filter;
+  }
+
+  if (deletedDocCount) {
+    skipDocs -= deletedDocCount;
+  }
+
+  const result = await Notification.find(findQuery)
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .populate("blog", "title blog_id")
+    .lean()
+    .populate(
+      "user",
+      "personal_info.fullname personal_info.username personal_info.profile_img"
+    )
+    .lean()
+    .populate("comment", "comment")
+    .lean()
+    .populate("replied_on_comment", "comment")
+    .lean()
+    .populate("reply", "comment")
+    .lean()
+    .sort({ createdAt: -1 })
+    .select("createdAt type seen reply ")
+    .then((notifications) => {
+      return { status: 200, notifications };
+    })
+    .catch((err) => {
+      console.error(err.message);
+      return {
+        status: 500,
+        error: err.message,
+        message: "failed to get notifications data",
+      };
+    });
+
+  console.log("result::::::::::::::::::::::");
+  console.log(result);
+
+  return result;
+}
+
+export async function allNotificationCount({ token, filter }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return tokenResult;
+  }
+
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+
+  if (filter != "all") {
+    findQuery.type = filter;
+  }
+
+  const result = await Notification.countDocuments(findQuery)
+    .then((count) => {
+      return { status: 200, totalDocsKey: count };
+    })
+    .catch((err) => {
+      console.error(err.message);
+      return {
+        status: 500,
+        message: "Failed to get number of notifications",
+        error: err.message,
+      };
+    });
+
+  console.log("Notification counts:::::::::::::;;");
+  console.log(result);
 
   return result;
 }

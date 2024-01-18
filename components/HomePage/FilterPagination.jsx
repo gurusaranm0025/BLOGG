@@ -1,4 +1,5 @@
 import { blogsCount } from "@/server/fetchBlogs";
+
 export async function filterPaginationData({
   createNewArr = false,
   state,

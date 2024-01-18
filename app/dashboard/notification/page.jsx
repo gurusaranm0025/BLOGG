@@ -1,16 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { UserContext } from "@/common/ContextProvider";
+import { filterPaginationData } from "@/components/HomePage/FilterPagination";
+import { getNotifications } from "@/server/fetchBlogs";
+import { useContext, useEffect, useState } from "react";
 
 function page() {
   const [filter, setFilter] = useState("all");
 
+  const {
+    userAuth: { access_token },
+  } = useContext(UserContext);
+
   let filters = ["all", "like", "comment", "reply"];
+  let [notifications, setNotifications] = useState(null);
+
+  function fetchNotifications({ page, deletedDocCount = 0 }) {
+    getNotifications({
+      token: access_token,
+      page,
+      deletedDocCount,
+      filter,
+    }).then(async ({ notifications: data }) => {
+      console.log(data);
+      let formatedData = await filterPaginationData({
+        state: notifications,
+        data,
+        page,
+        route: "notifications",
+        dataToSend: { filter, user: access_token },
+      });
+
+      console.log("Formatted data : ", formatedData);
+
+      setNotifications(formatedData);
+    });
+  }
+
+  useEffect(() => {
+    if (access_token) {
+      fetchNotifications({ page: 1 });
+    }
+  }, [access_token, filter]);
 
   function filterHandler(e) {
     let btn = e.target;
 
     setFilter(btn.innerHTML);
+
+    setNotifications(null);
   }
 
   return (
