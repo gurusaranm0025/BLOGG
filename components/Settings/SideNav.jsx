@@ -20,7 +20,7 @@ function SideNav({ children }) {
   }, []);
 
   const {
-    userAuth: { access_token },
+    userAuth: { access_token, new_notification_available },
   } = useContext(UserContext);
 
   function changePageState(e) {
@@ -93,7 +93,14 @@ function SideNav({ children }) {
               (pageState == "Notification" ? "sidebar-link-active" : "")
             }
           >
-            <i className="fa-solid fa-bell"></i>
+            <div className="relative">
+              <i className="fa-solid fa-bell text-lg"></i>
+              {new_notification_available ? (
+                <span className="bg-red-500 w-2 h-2 rounded-full absolute z-10 top-0 right-0"></span>
+              ) : (
+                ""
+              )}
+            </div>
             Notification
           </Link>
 
