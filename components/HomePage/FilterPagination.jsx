@@ -14,7 +14,6 @@ export async function filterPaginationData({
   } else {
     await blogsCount({ route, category: dataToSend })
       .then((response) => {
-        console.log(response);
         if (response.status == 200) {
           obj = { results: data, page: 1, totalDocs: response.totalDocs };
         } else {

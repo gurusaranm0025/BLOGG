@@ -596,3 +596,39 @@ export async function deleteComment({ token, _id }) {
 
   return result;
 }
+
+export async function newNotification({ token }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    console.log(tokenResult);
+    return tokenResult;
+  }
+
+  const result = await Notification.exists({
+    notification_for: user_id,
+    seen: false,
+    user: { $ne: user_id },
+  })
+    .then((response) => {
+      if (response) {
+        return { status: 200, new_notification_available: true };
+      } else {
+        return { status: 200, new_notification_available: false };
+      }
+    })
+    .catch((err) => {
+      console.error(err.message);
+      return {
+        status: 500,
+        error: err.message,
+        message: "Failed to see the number of notifications.",
+      };
+    });
+
+  return result;
+}

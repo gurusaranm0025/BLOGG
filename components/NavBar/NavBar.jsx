@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Logo from "../Logo/Logo";
 import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
@@ -8,6 +8,7 @@ import { UserContext } from "@/common/ContextProvider";
 import UserNavigationPanel from "./UserNavigationPanel";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { newNotification } from "@/server/fetchBlogs";
 
 function NavBar() {
   const router = useRouter();
@@ -16,7 +17,8 @@ function NavBar() {
 
   const {
     userAuth,
-    userAuth: { access_token, profile_img },
+    userAuth: { access_token, profile_img, new_notification_available },
+    setUserAuth,
   } = useContext(UserContext);
 
   function handleSearch(e) {
@@ -26,6 +28,17 @@ function NavBar() {
       router.push(`/search/${query}`);
     }
   }
+
+  useEffect(() => {
+    if (access_token) {
+      newNotification({ token: access_token }).then(
+        ({ new_notification_available }) => {
+          setUserAuth({ ...userAuth, new_notification_available });
+          ``;
+        }
+      );
+    }
+  }, [access_token]);
 
   return (
     <nav className="navbar z-50">
@@ -69,6 +82,11 @@ function NavBar() {
             <Link href="/dashboard/notification">
               <button className="w-12 h-12 bg-gray-300 rounded-full relative hover:bg-black/10 duration-150">
                 <BellIcon className="w-[1.5rem] block mx-auto my-auto" />
+                {new_notification_available ? (
+                  <span className="bg-red-500 w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
+                ) : (
+                  ""
+                )}
               </button>
             </Link>
 
