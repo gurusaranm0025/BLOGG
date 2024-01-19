@@ -2,6 +2,11 @@
 
 import { UserContext } from "@/common/ContextProvider";
 import { filterPaginationData } from "@/components/HomePage/FilterPagination";
+import LoadMoreDataBtn from "@/components/HomePage/LoadMoreDataBtn";
+import NoData from "@/components/HomePage/NoData";
+import Loader from "@/components/Loader/Loader";
+import NotificationCard from "@/components/Notifications/NotificationCard";
+import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import { getNotifications } from "@/server/fetchBlogs";
 import { useContext, useEffect, useState } from "react";
 
@@ -70,6 +75,36 @@ function page() {
           );
         })}
       </div>
+
+      {notifications == null ? (
+        <Loader />
+      ) : (
+        <>
+          {notifications.results.length ? (
+            notifications.results.map((notification, i) => {
+              return (
+                <AnimationWrapper key={i} transition={{ delay: i * 0.08 }}>
+                  <NotificationCard
+                    data={notification}
+                    index={i}
+                    notificationState={{ notifications, setNotifications }}
+                  />
+                </AnimationWrapper>
+              );
+            })
+          ) : (
+            <NoData message={"Nothing available..."} />
+          )}
+
+          <LoadMoreDataBtn
+            state={notifications}
+            fetchDataFun={fetchNotifications}
+            additionalParam={{
+              deletedDocCount: notifications.deletedDocCount,
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }

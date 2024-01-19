@@ -29,12 +29,12 @@ function page({ params }) {
   });
 
   async function signHandler(type = params.signMethod) {
-    const credResult = await credValidityCheck(
-      (type = params.signMethod),
-      userCred.username ? (username = userCred.username) : "none",
-      (email = userCred.email),
-      (password = userCred.password)
-    );
+    const credResult = await credValidityCheck({
+      type: params.signMethod,
+      username: userCred.username ? userCred.username : "none",
+      email: userCred.email,
+      password: userCred.password,
+    });
 
     if (credResult.status != 200) console.log(credResult);
 

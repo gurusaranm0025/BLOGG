@@ -60,7 +60,7 @@ function formatDataToSend(user) {
 }
 
 //credential Validity checker
-async function credValidityCheck(type, username, email, password) {
+async function credValidityCheck({ type, username, email, password }) {
   if (type == "signup") {
     if (!username.length || username.length < 4) {
       return {

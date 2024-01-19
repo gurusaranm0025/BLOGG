@@ -369,6 +369,7 @@ export async function addComment({
   comment,
   replying_to,
   blog_author,
+  notification_id,
 }) {
   let user_id;
   const tokenResult = await tokenVerify({ token });
@@ -440,6 +441,15 @@ export async function addComment({
         ).then((replyingToCommentDoc) => {
           notificationObj.notification_for = replyingToCommentDoc.commented_by;
         });
+
+        if (notification_id) {
+          Notification.findOneAndUpdate(
+            { _id: notification_id },
+            { reply: commentFile._id }
+          ).then((notification) => {
+            console.log("Notification is updated...");
+          });
+        }
       }
 
       await new Notification(notificationObj)
@@ -532,7 +542,7 @@ export async function getReplies({ _id, skip }) {
 //delete comments functions
 function deleteComments(_id) {
   Comment.findOneAndDelete({ _id })
-    .then((comment) => {
+    .then(async (comment) => {
       if (comment.parent) {
         Comment.findOneAndUpdate(
           { _id: comment.parent },
@@ -546,13 +556,14 @@ function deleteComments(_id) {
           });
       }
 
-      Notification.findOneAndDelete({ comment: _id }).then((notification) =>
-        console.log("comment's notification is deleted")
+      await Notification.findOneAndDelete({ comment: _id }).then(
+        (notification) => console.log("comment's notification is deleted")
       );
 
-      Notification.findOneAndDelete({ reply: _id }).then((notification) =>
-        console.log("reply's notification is deleted")
-      );
+      await Notification.findOneAndUpdate(
+        { reply: _id },
+        { $unset: { reply: 1 } }
+      ).then((notification) => console.log("reply's notification is deleted"));
 
       Blog.findOneAndUpdate(
         { _id: comment.blog_id },
@@ -560,8 +571,8 @@ function deleteComments(_id) {
           $pull: { comments: _id },
           $inc: {
             "activity.total_comments": -1,
-            "activity.total_parent_comments": comment.parent ? 0 : -1,
           },
+          "activity.total_parent_comments": comment.parent ? 0 : -1,
         }
       ).then((blog) => {
         if (comment.children.length) {
