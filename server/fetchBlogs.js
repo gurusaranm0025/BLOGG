@@ -556,11 +556,11 @@ function deleteComments(_id) {
           });
       }
 
-      await Notification.findOneAndDelete({ comment: _id }).then(
-        (notification) => console.log("comment's notification is deleted")
+      Notification.findOneAndDelete({ comment: _id }).then((notification) =>
+        console.log("comment's notification is deleted")
       );
 
-      await Notification.findOneAndUpdate(
+      Notification.findOneAndUpdate(
         { reply: _id },
         { $unset: { reply: 1 } }
       ).then((notification) => console.log("reply's notification is deleted"));
@@ -571,8 +571,8 @@ function deleteComments(_id) {
           $pull: { comments: _id },
           $inc: {
             "activity.total_comments": -1,
+            "activity.total_parent_comments": comment.parent ? 0 : -1,
           },
-          "activity.total_parent_comments": comment.parent ? 0 : -1,
         }
       ).then((blog) => {
         if (comment.children.length) {
