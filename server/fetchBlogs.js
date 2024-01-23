@@ -54,7 +54,11 @@ export async function blogsCount({ route, category }) {
       filter: category.filter,
     });
   } else if (route == "user-written-blogs-count") {
-    result = await userWrittenBlogsCount();
+    result = await userWrittenBlogsCount({
+      token: category.user,
+      draft: category.draft,
+      query: category.query,
+    });
   }
 
   if (route != "notifications" && route != "user-written-blogs-count") {
@@ -824,6 +828,46 @@ export async function userWrittenBlogsCount({ token, draft, query }) {
         status: 500,
         message:
           "An error occured while retrieving number of blogs written by you.",
+        error: err.message,
+      };
+    });
+
+  return result;
+}
+
+export async function deleteBlog({ token, blog_id }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return tokenResult;
+  }
+
+  const result = await Blog.findOneAndDelete({ blog_id })
+    .then((blog) => {
+      Notification.deleteMany({ blog: blog._id }).then((data) => {
+        console.log("Notifications are deleted.");
+      });
+
+      Comment.deleteMany({ blog_id }).then((data) => {
+        console.log("comments are deleted");
+      });
+
+      User.findOneAndUpdate(
+        { _id: user_id },
+        { $pull: { blog: blog._id }, $inc: { "account_info.total_posts": -1 } }
+      ).then((data) => {
+        console.log("Blog is deleted.");
+      });
+
+      return { status: 200, message: "Successfully deleted the blog" };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Failed to delte your blog.",
         error: err.message,
       };
     });

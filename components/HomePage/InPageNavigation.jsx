@@ -6,7 +6,7 @@ export let activeTabRef;
 
 function InPageNavigation({
   routes,
-  defaultHidden,
+  defaultHidden = "",
   defaultActiveIndex = 0,
   children,
 }) {
