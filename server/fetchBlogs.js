@@ -40,7 +40,6 @@ export async function getLatestBlogs(page = 1) {
 
 //latest blogs count
 export async function blogsCount({ route, category }) {
-  console.log("Category : ", category);
   let result;
   let findQuery;
   if (route == "latest") {
@@ -54,9 +53,11 @@ export async function blogsCount({ route, category }) {
       token: category.user,
       filter: category.filter,
     });
+  } else if (route == "user-written-blogs-count") {
+    result = await userWrittenBlogsCount();
   }
 
-  if (route != "notifications") {
+  if (route != "notifications" && route != "user-written-blogs-count") {
     result = await Blog.countDocuments(findQuery)
       .then((count) => {
         return { status: 200, totalDocs: count };
@@ -69,6 +70,7 @@ export async function blogsCount({ route, category }) {
         };
       });
   }
+
   return result;
 }
 
@@ -748,6 +750,83 @@ export async function allNotificationCount({ token, filter }) {
 
   console.log("Notification counts:::::::::::::;;");
   console.log(result);
+
+  return result;
+}
+
+export async function getUserWrittenBlogs({
+  token,
+  page,
+  draft,
+  query,
+  deletedDocCount,
+}) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return tokenResult;
+  }
+
+  let maxLimit = 5;
+  let skipDocs = (page - 1) * maxLimit;
+
+  if (deletedDocCount) {
+    skipDocs -= deletedDocCount;
+  }
+
+  const result = await Blog.find({
+    author: user_id,
+    draft,
+    title: new RegExp(query, "i"),
+  })
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .sort({ publishedAt: -1 })
+    .select("title banner publishedAt blog_id activity des draft -_id")
+    .then((blogs) => {
+      return { status: 200, blogs };
+    })
+    .catch((err) => {
+      return {
+        status: 500,
+        message: "Failed to retrieve your blogs",
+        error: err.message,
+      };
+    });
+
+  return result;
+}
+
+export async function userWrittenBlogsCount({ token, draft, query }) {
+  let user_id;
+
+  let tokenResult = await tokenVerify({ token });
+  if (tokenResult.status == 200) {
+    user_id = tokenResult.id;
+  } else {
+    return tokenResult;
+  }
+
+  const result = await Blog.countDocuments({
+    author: user_id,
+    draft,
+    title: new RegExp(query, "i"),
+  })
+    .then((count) => {
+      return { status: 200, totalDocs: count };
+    })
+    .catch((err) => {
+      console.error(err.message);
+      return {
+        status: 500,
+        message:
+          "An error occured while retrieving number of blogs written by you.",
+        error: err.message,
+      };
+    });
 
   return result;
 }

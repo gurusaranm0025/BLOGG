@@ -4,6 +4,7 @@ import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import { useContext } from "react";
 import { UserContext } from "@/common/ContextProvider";
 import { removeFromSession } from "@/common/session";
+import Link from "next/link";
 
 function UserNavigationPanel() {
   const {
@@ -21,25 +22,28 @@ function UserNavigationPanel() {
       transition={{ duration: 0.2 }}
     >
       <div className="absolute bg-white right-0 border border-gray-300 w-60 duration-200">
-        <a
+        <Link
           href="/editor"
           className="flex gap-2 link md:hidden pl-8 py-4 duration-200"
         >
           <PencilSquareIcon className="w-[1.5rem]" />
           <p>Write</p>
-        </a>
-        <a href={`/user/${username}`} className="link pl-8 py-4 duration-200">
+        </Link>
+        <Link
+          href={`/user/${username}`}
+          className="link pl-8 py-4 duration-200"
+        >
           Profile
-        </a>
-        <a href="/dashboard/blog" className="link pl-8 py-4 duration-200">
+        </Link>
+        <Link href="/dashboard/blogs" className="link pl-8 py-4 duration-200">
           Dashboard
-        </a>
-        <a
+        </Link>
+        <Link
           href="/settings/edit-profile"
           className="link pl-8 py-4 duration-200"
         >
           Settings
-        </a>
+        </Link>
         <span className="absolute border-t border-cadet-gray/70 w-[100%]"></span>
         <button
           className="text-left p-4 hover:bg-gray-300 w-full pl-8 px-4"
