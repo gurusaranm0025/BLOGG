@@ -67,28 +67,30 @@ function PublishForm() {
 
     let blogObj = { title, des, banner, content, tags, draft: false };
 
-    const result = await createBlog(access_token, {
+    createBlog(access_token, {
       ...blogObj,
       id: blog_id,
-    }).catch((err) => {
-      toast.error("failed");
-      console.log(err.message);
-    });
+    })
+      .then((response) => {
+        e.target.classList.remove("disable");
 
-    toast.dismiss(loadingToast);
-    e.target.classList.remove("disable");
+        toast.dismiss(loadingToast);
 
-    if (result.status == 500) {
-      console.error(result.error);
-      toast.error(result.message);
-    } else {
-      setTimeout(() => {
-        router.push("/"), 500;
+        if (response.status == 500) {
+          console.error(response.error);
+          toast.error(response.message);
+        } else {
+          setTimeout(() => {
+            router.push("/dashboard/blogs"), 500;
+          });
+          toast.success("Published successfully");
+        }
+      })
+      .catch((err) => {
+        toast.dismiss(loadingToast);
+        toast.error("failed");
+        console.log(err.message);
       });
-      toast.success("Published successfully");
-    }
-
-    console.log(result);
   }
 
   return (

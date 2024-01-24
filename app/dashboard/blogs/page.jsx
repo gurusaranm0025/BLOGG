@@ -11,6 +11,7 @@ import {
 } from "@/components/ManageBlogs/ManagePublishedBlogsCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import { getUserWrittenBlogs } from "@/server/fetchBlogs";
+import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -22,6 +23,11 @@ function page() {
   const [blogs, setBlogs] = useState(null);
   const [drafts, setDrafts] = useState(null);
   const [query, setQuery] = useState("");
+
+  // let activeTab = useSearchParams()[0].get("tab");
+  const searchParams = useSearchParams();
+  let activeTab = searchParams.get("tab");
+  console.log("active Tab : ", activeTab);
 
   function getBlogs({ page, draft, deletedDocCount = 0 }) {
     getUserWrittenBlogs({
@@ -102,7 +108,10 @@ function page() {
         <i className="fa-solid fa-magnifying-glass absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gunmetal"></i>
       </div>
 
-      <InPageNavigation routes={["Published Blogs", "Drafts"]}>
+      <InPageNavigation
+        routes={["Published Blogs", "Drafts"]}
+        defaultActiveIndex={activeTab != "draft" ? 0 : 1}
+      >
         {/* Published blogs */}
 
         {blogs == null ? (

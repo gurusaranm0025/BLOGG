@@ -101,7 +101,7 @@ function BlogEditor() {
           toast.error(result.message);
         } else {
           setTimeout(() => {
-            router.push("/"), 500;
+            router.push("/dashboard/blogs?tab=draft"), 500;
           });
           toast.success("Draft Saved");
         }
