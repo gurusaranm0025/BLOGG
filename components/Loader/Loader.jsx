@@ -3,7 +3,7 @@ function Loader() {
     <div className="w-12 mx-auto my-8">
       <svg
         aria-hidden="true"
-        className="w-12 h-12 mr-2 text-white animate-spin fill-cadet-gray"
+        className="w-12 h-12 mr-2 text-white animate-spin fill-french-gray"
         viewBox="0 0 100 101"
         fill="none"
       >

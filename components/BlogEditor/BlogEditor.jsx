@@ -4,7 +4,7 @@ import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import ImageUpload from "./ImageUpload";
 import { EditorContext } from "../Editor/EditorPage";
 import toast, { Toaster } from "react-hot-toast";
-import { UserContext } from "@/common/ContextProvider";
+import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { createBlog } from "@/server/publishBlog";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -25,6 +25,8 @@ function BlogEditor() {
   let {
     userAuth: { access_token },
   } = useContext(UserContext);
+
+  let { theme, setTheme } = useContext(ThemeContext);
 
   let { blog_id } = useParams();
 
@@ -123,10 +125,10 @@ function BlogEditor() {
         </p>
 
         <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2" onClick={PublishHandler}>
+          <button className="btn-dark py-3" onClick={PublishHandler}>
             Publish
           </button>
-          <button className="btn-light py-2" onClick={saveDraftHandler}>
+          <button className="btn-light py-3" onClick={saveDraftHandler}>
             Save Draft
           </button>
         </div>
@@ -141,7 +143,7 @@ function BlogEditor() {
             <textarea
               defaultValue={title}
               placeholder="Blog Title"
-              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 bg-white"
               name=""
               id=""
               onKeyDown={handleTitleKeyDown}

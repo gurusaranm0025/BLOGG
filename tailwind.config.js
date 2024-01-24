@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import defaultColors from "tailwindcss/colors";
+import { createThemes } from "tw-colors";
 
 const colors = {
   gunmetal: "#132D2F",
@@ -7,6 +8,14 @@ const colors = {
   "cadet-gray": "#8E9AA9",
   "rose-quartz": "#AA9897",
   "gunmetal-2": "#062528",
+  black: "#242424",
+  red: "#FF4E4E",
+  transparent: "transparent",
+  purple: "#8846FF",
+  twitter: "#1DA1F2",
+  grey: "#F3F3F3",
+  "dark-grey": "#6B6B6B",
+  white: "#FFFFFF",
 };
 
 export const content = [
@@ -16,10 +25,20 @@ export const content = [
 ];
 
 export const theme = {
-  colors: {
-    ...defaultColors,
-    ...colors,
+  fontSize: {
+    sm: "12px",
+    base: "14px",
+    lg: "15px",
+    xl: "16px",
+    "2xl": "20px",
+    "3xl": "28px",
+    "4xl": "38px",
+    "5xl": "50px",
   },
+  // colors: {
+  //   ...defaultColors,
+  //   ...colors,
+  // },
   extend: {
     backgroundImage: {
       "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -37,4 +56,39 @@ export const theme = {
     },
   },
 };
-export const plugins = [];
+export const plugins = [
+  createThemes({
+    light: {
+      ...defaultColors,
+      gunmetal: "#132D2F",
+      "french-gray": "#BDBABF",
+      "cadet-gray": "#8E9AA9",
+      "rose-quartz": "#AA9897",
+      "gunmetal-2": "#062528",
+      black: "#242424",
+      red: "#FF4E4E",
+      transparent: "transparent",
+      purple: "#8846FF",
+      twitter: "#1DA1F2",
+      grey: "#F3F3F3",
+      "dark-grey": "#6B6B6B",
+      white: "#FFFFFF",
+    },
+    dark: {
+      ...defaultColors,
+      gunmetal: "#F3F3F3",
+      "french-gray": "#BDBABF",
+      "cadet-gray": "#8E9AA9",
+      "rose-quartz": "#AA9897",
+      "gunmetal-2": "#062528",
+      black: "#BDBABF",
+      red: "#991F1F",
+      transparent: "transparent",
+      purple: "#582C8E",
+      twitter: "#0E71A8",
+      grey: "#2A2A2A",
+      "dark-grey": "#E7E7E7",
+      white: "#242424",
+    },
+  }),
+];

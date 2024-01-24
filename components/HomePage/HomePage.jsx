@@ -120,27 +120,29 @@ function HomePage() {
               {blogs == null ? (
                 <Loader />
               ) : blogs.results.length ? (
-                blogs.results.map((blog, i) => {
-                  return (
-                    <AnimationWrapper
-                      key={i}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                    >
-                      <BlogPostCard
-                        content={blog}
-                        author={blog.author.personal_info}
-                      />
-                      <LoadMoreDataBtn
-                        state={blogs}
-                        fetchDataFun={
-                          pageState == "home"
-                            ? fetchLatestBlogs
-                            : fetchBlogsByCategory
-                        }
-                      />
-                    </AnimationWrapper>
-                  );
-                })
+                <>
+                  {blogs.results.map((blog, i) => {
+                    return (
+                      <AnimationWrapper
+                        key={i}
+                        transition={{ duration: 1, delay: i * 0.1 }}
+                      >
+                        <BlogPostCard
+                          content={blog}
+                          author={blog.author.personal_info}
+                        />
+                      </AnimationWrapper>
+                    );
+                  })}
+                  <LoadMoreDataBtn
+                    state={blogs}
+                    fetchDataFun={
+                      pageState == "home"
+                        ? fetchLatestBlogs
+                        : fetchBlogsByCategory
+                    }
+                  />
+                </>
               ) : (
                 <NoData message="No blogs have been published under this category" />
               )}

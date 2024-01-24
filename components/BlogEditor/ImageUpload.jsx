@@ -1,7 +1,8 @@
 "use client";
-import defaultBanner from "@/public/blog-banner.png";
+import lightBanner from "@/public/blog-banner.png";
+import darkBanner from "@/public/blog-banner-dark.png";
 import { EditorContext } from "../Editor/EditorPage";
-import { UserContext } from "@/common/ContextProvider";
+import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { useContext } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { uploadImage } from "../ImageUpload/uploadImage";
@@ -10,6 +11,8 @@ function ImageUpload() {
   const {
     userAuth: { username },
   } = useContext(UserContext);
+
+  let { theme, setTheme } = useContext(ThemeContext);
 
   let {
     blog,
@@ -50,7 +53,13 @@ function ImageUpload() {
       <label htmlFor="uploadBanner">
         <Toaster />
         <img
-          src={banner.length ? banner : defaultBanner.src}
+          src={
+            banner.length
+              ? banner
+              : theme == "dark"
+              ? darkBanner.src
+              : lightBanner.src
+          }
           className="z-20"
         />
         <input
