@@ -12,11 +12,26 @@ function InPageNavigation({
 }) {
   activeTabLineRef = useRef();
   activeTabRef = useRef();
-  let [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
+  const [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
+
+  const [isResizeEventAdded, setIsResizeEventAdded] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    changePageState(activeTabRef.current, defaultActiveIndex);
-  }, []);
+    if (width > 766 && inPageNavIndex != defaultActiveIndex) {
+      changePageState(activeTabRef.current, defaultActiveIndex);
+    }
+
+    if (!isResizeEventAdded) {
+      window.addEventListener("resize", () => {
+        if (!isResizeEventAdded) {
+          setIsResizeEventAdded(true);
+        }
+
+        setWidth(window.innerWidth);
+      });
+    }
+  }, [width]);
 
   function changePageState(btn, index) {
     let { offsetWidth, offsetLeft } = btn;
