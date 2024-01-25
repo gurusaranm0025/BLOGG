@@ -169,7 +169,7 @@ function CommentCard({ index, leftVal, commentData }) {
             currentIndex: parentIndex,
           })
         }
-        className="text-cadet-gray p-2 px-3 hover:bg-gray-300/30 rounded-md flex items-center gap-2"
+        className="text-black p-2 px-3 outline-none hover:outline-rose-quartz/30 hover:bg-rose-quartz/10 rounded-md flex items-center gap-2 duration-300"
       >
         Load more replies
       </button>
@@ -194,7 +194,7 @@ function CommentCard({ index, leftVal, commentData }) {
 
   return (
     <div className="w-full" style={{ paddingLeft: `${leftVal * 10}px` }}>
-      <div className="my-5 p-6 rounded-md border border-gray-300/50 ">
+      <div className="my-5 p-6 rounded-md border border-french-gray/40 ">
         <div className="flex gap-3 items-center mb-8">
           <img
             src={profile_img}
@@ -202,10 +202,10 @@ function CommentCard({ index, leftVal, commentData }) {
             className="h-6 w-6 rounded-full"
           />
 
-          <p className="line-clamp-1">
+          <p className="line-clamp-1 text-sm md:text-lg">
             {fullname} @{commented_by_username}
           </p>
-          <p className="min-w-fit">{getDay(commentedAt)}</p>
+          <p className="min-w-fit text-sm md:text-lg">{getDay(commentedAt)}</p>
         </div>
 
         <p className="font-poppins text-xl ml-3">{comment}</p>
@@ -213,30 +213,33 @@ function CommentCard({ index, leftVal, commentData }) {
         <div className="flex gap-5 items-center mt-5">
           {commentData.isReplyLoaded ? (
             <button
-              className="text-cadet-gray p-2 px-3 hover:bg-gray-300/30 rounded-md flex items-center gap-2"
+              className="text-black/75 p-2 px-3 hover:bg-rose-quartz/10 hover:text-french-gray duration-300 rounded-md flex items-center gap-2"
               onClick={handleHideReplies}
             >
               Hide Reply
             </button>
           ) : (
             <button
-              className="text-cadet-gray p-2 px-3 hover:bg-gray-300/30 rounded-md flex items-center gap-2"
+              className="text-black bg-grey/80 p-2 px-3 hover:bg-rose-quartz/20 rounded-md flex items-center gap-2 duration-300"
               onClick={handleLoadReplies}
             >
               {children.length} replies
             </button>
           )}
 
-          <button className="underline" onClick={handleReply}>
+          <button
+            className="underline bg-grey/50 hover:bg-grey text-black outline-none hover:outline-rose-quartz/30 p-2 rounded-md duration-300 hover:text-french-gray"
+            onClick={handleReply}
+          >
             reply
           </button>
 
           {username == commented_by_username || username == author_username ? (
             <button
-              className="group duration-200 p-3 px-3 rounded-md border border-gray-300 ml-auto hover:bg-red-500/30 flex items-center "
+              className="group duration-300 py-2 px-3 rounded-md border border-french-gray/30 ml-auto hover:bg-red/30 flex items-center "
               onClick={handleDeleteComment}
             >
-              <i class="fa-solid fa-trash group-hover:text-red-500 duration-200"></i>
+              <i class="fi fi-rs-trash group-hover:text-red text-black duration-300"></i>
             </button>
           ) : (
             ""

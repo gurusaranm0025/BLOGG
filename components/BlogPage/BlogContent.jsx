@@ -1,10 +1,10 @@
 function Img({ src, caption }) {
   return (
     <div>
-      <img src={src} alt="blog_image" />
+      <img className="rounded-md" src={src} alt="blog_image" />
       {caption.length ? (
         <p
-          className="w-full text-center my-3 md:mb-12 text-base text-cadet-gray"
+          className="w-full font-noto text-center my-3 mb-1 md:mb-12 text-base text-dark-grey/60"
           dangerouslySetInnerHTML={{ __html: caption }}
         ></p>
       ) : (
@@ -16,15 +16,15 @@ function Img({ src, caption }) {
 
 function Quote({ quote, caption }) {
   return (
-    <div className="bg-purple-500/10 p-3 pl-5 border-l-4 border-purple-400">
+    <div className="bg-gunmetal-2/10 p-3 pl-5 border-l-4 border-gunmetal-2">
       <p
-        className="text-xl leading-10 md:text-2xl"
+        className="text-xl leading-10 md:text-2xl font-noto tracking-wide italic"
         dangerouslySetInnerHTML={{ __html: quote }}
       ></p>
       {caption.length ? (
         <p
-          className="w-full text-purple-600 "
-          dangerouslySetInnerHTML={{ __html: caption }}
+          className="w-full text-right text-purple/80 italic tracking-wider"
+          dangerouslySetInnerHTML={{ __html: "-" + caption }}
         ></p>
       ) : (
         ""
@@ -40,7 +40,7 @@ function List({ style, items }) {
         return (
           <li
             key={i}
-            className="my-4"
+            className="my-4 font-noto"
             dangerouslySetInnerHTML={{ __html: item }}
           ></li>
         );
@@ -53,14 +53,19 @@ function BlogContent({ block }) {
   let { type, data } = block;
 
   if (type == "paragraph") {
-    return <p dangerouslySetInnerHTML={{ __html: data.text }}></p>;
+    return (
+      <p
+        dangerouslySetInnerHTML={{ __html: data.text }}
+        className="font-noto text-black"
+      ></p>
+    );
   }
 
   if (type == "header") {
     if (data.level == 3) {
       return (
         <h3
-          className="text-3xl font-bold"
+          className="font-noto text-3xl font-semibold"
           dangerouslySetInnerHTML={{ __html: data.text }}
         ></h3>
       );
@@ -68,7 +73,7 @@ function BlogContent({ block }) {
 
     return (
       <h2
-        className="text-3xl font-bold"
+        className="text-3xl font-noto font-bold"
         dangerouslySetInnerHTML={{ __html: data.text }}
       ></h2>
     );

@@ -121,10 +121,10 @@ function page({ params }) {
           </InPageNavigation>
         </div>
 
-        <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-cadet-gray/50 pl-8 pt-3 max-md:hidden">
-          <h1 className="font-medium text-lg mb-8 flex items-center">
+        <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-french-gray/60 pl-8 pt-3 max-md:hidden">
+          <h1 className="font-medium text-xl mb-8 flex items-center">
             Users related to search
-            <UsersIcon className="w-[1.8rem] inline-block ml-1 " />
+            <i className="fi fi-rr-users-alt text-2xl text-black inline-block ml-[8px]"></i>
           </h1>
 
           <UserCardWrapper />

@@ -1,5 +1,6 @@
 "use client";
 import { UserContext } from "@/common/ContextProvider";
+import { Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ function SideNav({ children }) {
     let page = location.pathname.split("/")[2].replace("-", " ");
     setPageState(page);
   }, []);
+  console.log("page => ", pageState);
 
   const {
     userAuth: { access_token, new_notification_available },
@@ -41,18 +43,19 @@ function SideNav({ children }) {
   ) : (
     <section className="relative flex gap-10 py-0 m-0 max-md:flex-col">
       <div className="sticky top-[75px] z-30">
-        <div className="md:hidden bg-white py-1 border-b border-gray-300 flex flex-nowrap overflow-x-auto">
+        <div className="md:hidden bg-white py-1 border-b border-french-gray/10 flex flex-nowrap overflow-x-auto">
           <button
             ref={sideBarIconTab}
             onClick={changePageState}
-            className="p-5"
+            className="p-5 hover:opacity-70 duration-300"
           >
-            <i className="fa-solid fa-bars-staggered pointer-events-none"></i>
+            {/* <i className="fa-solid fa-bars-staggered pointer-events-none"></i> */}
+            <Bars3BottomLeftIcon className="w-[1.2rem] md:w-[1.5rem] pointer-events-none" />
           </button>
           <button
             ref={pageStateTab}
             onClick={changePageState}
-            className="p-5 capitalize"
+            className="p-5 capitalize hover:opacity-70 duration-300"
           >
             {pageState}
           </button>
@@ -64,21 +67,21 @@ function SideNav({ children }) {
 
         <div
           className={
-            "min-w-[200px] h-[calc(100vh-75px-60px)] md:h-cover md:sticky top-24 overflow-y-auto p-6 md:pr-0 md:border-gray-300 md:border-r absolute max-md:top-[64px] bg-white w-[calc(100%+75px)] max-md:px-16 max-md:-ml-7 duration-500 " +
+            "min-w-[200px] h-[calc(100vh-75px-60px)] md:h-cover md:sticky top-24 overflow-y-auto p-6 md:pr-0 md:border-french-gray/60 md:border-r absolute max-md:top-[64px] bg-white w-[calc(100%+75px)] max-md:px-16 max-md:-ml-7 duration-500 " +
             (!showSideNav
               ? "max-md:opacity-0 max-md:pointer-events-none"
               : "opacity-100 pointer-events-auto")
           }
         >
-          <h1 className="text-xl text-cadet-gray mb-3">DASHBOARD</h1>
-          <hr className="border-cadet-gray -ml-6 mb-8 mr-6" />
+          <h1 className="text-xl text-gunmetal mb-3">DASHBOARD</h1>
+          <hr className="border-french-gray/60 -ml-6 mb-8 mr-6" />
 
           <Link
             href={"/dashboard/blogs"}
-            onClick={(e) => setPageState(e.target.innerText)}
+            onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
               "sidebar-link " +
-              (pageState == "Blogs" ? "sidebar-link-active" : "")
+              (pageState == "blogs" ? "sidebar-link-active" : "")
             }
           >
             <i className="fa-solid fa-file"></i>
@@ -87,10 +90,10 @@ function SideNav({ children }) {
 
           <Link
             href={"/dashboard/notification"}
-            onClick={(e) => setPageState(e.target.innerText)}
+            onClick={(e) => setPageState(e.target.innerText.toLoweCase())}
             className={
               "sidebar-link " +
-              (pageState == "Notification" ? "sidebar-link-active" : "")
+              (pageState == "notification" ? "sidebar-link-active" : "")
             }
           >
             <div className="relative">
@@ -116,15 +119,15 @@ function SideNav({ children }) {
             Write
           </Link>
 
-          <h1 className="mt-20 text-xl text-cadet-gray mb-3">SETTINGS</h1>
-          <hr className="border-cadet-gray -ml-6 mb-8 mr-6" />
+          <h1 className="mt-20 text-xl text-gunmetal mb-3">SETTINGS</h1>
+          <hr className="border-french-gray/60 -ml-6 mb-8 mr-6" />
 
           <Link
             href={"/settings/edit-profile"}
-            onClick={(e) => setPageState(e.target.innerText)}
+            onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
               "sidebar-link " +
-              (pageState == "Edit Profile" ? "sidebar-link-active" : "")
+              (pageState == "edit profile" ? "sidebar-link-active" : "")
             }
           >
             <i className="fa-regular fa-user"></i> Edit Profile
@@ -132,10 +135,10 @@ function SideNav({ children }) {
 
           <Link
             href={"/settings/change-password"}
-            onClick={(e) => setPageState(e.target.innerText)}
+            onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
               " sidebar-link " +
-              (pageState == "Change Password" ? "sidebar-link-active" : "")
+              (pageState == "change password" ? "sidebar-link-active" : "")
             }
           >
             <i className="fa-solid fa-lock"></i> Change Password

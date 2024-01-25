@@ -22,11 +22,6 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&family=Montserrat:wght@200;400;600&family=Noto+Sans:wght@200;400;600&family=Poppins:wght@400;500;600&family=Raleway:wght@200;400;600&display=swap"
           rel="stylesheet"
         />
-        {/* Font Awesome */}
-        <script
-          src="https://kit.fontawesome.com/d01381783e.js"
-          crossOrigin="anonymous"
-        ></script>
       </head>
       <Providers>
         <body>

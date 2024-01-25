@@ -6,7 +6,10 @@ function UserCard({ user }) {
   } = user;
 
   return (
-    <Link href={`/user/${username}`} className="flex gap-5 items-center mb-5">
+    <Link
+      href={`/user/${username}`}
+      className="flex gap-5 items-center mb-5 hover:opacity-80 duration-300"
+    >
       <img
         src={profile_img}
         className="w-14 h-14 rounded-full"
@@ -15,7 +18,7 @@ function UserCard({ user }) {
 
       <div>
         <h1 className="font-medium text-lg line-clamp-2">{fullname}</h1>
-        <p className="text-cadet-gray">@{username}</p>
+        <p className="text-gunmetal-2">@{username}</p>
       </div>
     </Link>
   );

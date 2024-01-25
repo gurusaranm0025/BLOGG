@@ -7,7 +7,9 @@ export const UserContext = createContext({});
 export const ThemeContext = createContext({});
 
 function darkThemePreference() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (typeof window !== "undefined") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
 }
 
 export default function Providers({ children }) {

@@ -15,7 +15,11 @@ function InPageNavigation({
   const [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
 
   const [isResizeEventAdded, setIsResizeEventAdded] = useState(false);
-  const [width, setWidth] = useState(window.innerWidth);
+  let tempWindowWidth;
+  if (typeof window !== "undefined") {
+    tempWindowWidth = window.innerWidth;
+  }
+  const [width, setWidth] = useState(tempWindowWidth);
 
   useEffect(() => {
     if (width > 766 && inPageNavIndex != defaultActiveIndex) {
@@ -51,7 +55,7 @@ function InPageNavigation({
               ref={i == defaultActiveIndex ? activeTabRef : null}
               key={i}
               className={
-                "p-4 px-5 capitalize " +
+                "p-4 px-5 capitalize hover:bg-rose-quartz/10 rounded-t-lg duration-300 " +
                 (inPageNavIndex == i ? "text-black" : "text-cadet-gray ") +
                 (defaultHidden.includes(route) ? " md:hidden" : "")
               }

@@ -100,7 +100,7 @@ function page() {
         <input
           type="search"
           placeholder="Search Blogs..."
-          className="w-full bg-gray-200 p-4 pl-12 pr-6 rounded-full outline-none focus:outline-french-gray hover:bg-cadet-gray border-none placeholder:text-cadet-gray duration-300 hover:placeholder:text-gray-200 focus:bg-french-gray"
+          className="w-full bg-grey/50 p-4 pl-12 pr-6 rounded-full outline-none outline-rose-quartz/30 focus:outline-rose-quartz hover:bg-rose-quartz/10 border-none placeholder:text-cadet-gray duration-300 focus:placeholder:text-black focus:bg-grey"
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />

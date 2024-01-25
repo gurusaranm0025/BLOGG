@@ -168,10 +168,10 @@ function HomePage() {
         </div>
 
         {/* filters and trending */}
-        <div className="min-w-[40%] lg:min-w-[400px] border-l border-gray-300 pl-8 pt-3 max-md:hidden">
+        <div className="max-w-[500px] min-w-[40%] lg:min-w-[400px] border-l border-gray-300 pl-8 pt-3 max-md:hidden">
           <div className="flex flex-col gap-10">
             <div>
-              <h1 className="font-medium text-xl mb-8">
+              <h1 className="font-medium text-gunmetal text-xl mb-8">
                 Stories from all interests
               </h1>
 
@@ -180,7 +180,7 @@ function HomePage() {
                   return (
                     <button
                       className={
-                        "capitalize Tag duration-200 " +
+                        "capitalize Tag" +
                         (pageState == category
                           ? " bg-gunmetal text-white "
                           : "")

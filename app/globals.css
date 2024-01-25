@@ -1,4 +1,5 @@
 @import './editor-theme.css';
+@import "@flaticon/flaticon-uicons/css/all/all";
 
 @tailwind base;
 @tailwind components;
@@ -26,7 +27,7 @@
   }
 
   ::selection {
-    @apply bg-purple;
+    @apply bg-rose-quartz/40;
   }
 
   img {
@@ -46,15 +47,15 @@
   }
 
   .btn-dark {
-    @apply whitespace-nowrap bg-gunmetal text-white hover:text-black rounded-full py-3 px-6 text-lg capitalize hover:bg-french-gray/30 duration-300;
+    @apply whitespace-nowrap bg-gunmetal text-white hover:text-black rounded-full py-3 px-6 text-lg capitalize hover:bg-french-gray/50 duration-300 outline-none hover:outline-french-gray/50;
   }
 
   .btn-light {
-    @apply whitespace-nowrap rounded-full py-3 px-6 text-lg capitalize hover:text-black hover:bg-french-gray/30 bg-grey text-black duration-300;
+    @apply whitespace-nowrap rounded-full py-3 px-6 text-lg capitalize hover:text-black hover:bg-french-gray/30 bg-grey text-black duration-300 outline-none hover:outline-french-gray/30;
   }
 
   .input-box {
-    @apply w-[100%] rounded-md p-4 pl-12 border focus:bg-transparent placeholder:text-black;
+    @apply w-[100%] rounded-md p-4 pl-12 border focus:bg-transparent placeholder:text-gunmetal;
   }
 
   input:disabled,
@@ -75,11 +76,11 @@
   }
 
   .sidebar-link {
-    @apply flex gap-4 items-center py-5 text-dark-grey hover:text-black duration-150;
+    @apply flex gap-4 items-center py-5 text-dark-grey hover:bg-rose-quartz/10 hover:text-black duration-300 md:rounded-tl-lg md:rounded-bl-lg -ml-6 pl-6 mb-1;
   }
 
   .sidebar-link-active {
-    @apply text-black border-r-2 border-black pl-6 bg-dark-grey/50 -ml-6 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
+    @apply text-black border-r-2 border-rose-quartz bg-rose-quartz/30 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
   }
 
   #textEditor h2,
@@ -103,11 +104,11 @@
   }
 
   .Tag {
-    @apply p-3 bg-grey/80 rounded-full px-6 capitalize;
+    @apply p-3 bg-grey text-black rounded-full px-6 capitalize hover:bg-rose-quartz/30 duration-300;
   }
 
   .blog-title {
-    @apply text-2xl font-poppins font-medium leading-8 line-clamp-3 sm:line-clamp-2;
+    @apply text-2xl font-poppins font-medium leading-6 line-clamp-3 sm:line-clamp-2;
   }
 
   .blog-index {

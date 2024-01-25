@@ -63,22 +63,20 @@ function BlogInteraction() {
   return (
     <>
       <Toaster />
-      <hr className="border-cadet-gray/50 my-2 " />
+      <hr className="border-french-gray/60 my-2 " />
       <div className="flex gap-6 justify-between">
         <div className="flex gap-3 items-center">
           <button
             className={
-              "w-10 h-10 flex items-center rounded-full justify-center " +
-              (isLikedByUser ? "bg-red-300/50 " : "bg-gray-300/50 ")
+              "w-10 h-10 flex items-center rounded-full justify-center hover:bg-red/10 duration-300 " +
+              (isLikedByUser ? "bg-red/20 " : "bg-grey ")
             }
             onClick={handleLike}
           >
             <i
               className={
-                "fa-heart text-xl " +
-                (isLikedByUser
-                  ? "fa-solid text-red-600/80 "
-                  : "fa-regular text-gunmetal-2 ")
+                "fi fi-rr-heart text-2xl " +
+                (isLikedByUser ? " fi-sr-heart text-red " : " text-black ")
               }
             ></i>
           </button>
@@ -86,10 +84,10 @@ function BlogInteraction() {
           <p className="text-lg text-gunmetal">{total_likes}</p>
 
           <button
-            className="w-10 h-10 flex items-center rounded-full justify-center bg-gray-300/50"
+            className="w-10 h-10 flex items-center rounded-full justify-center bg-grey hover:bg-rose-quartz/10 duration-300"
             onClick={() => setCommentsWrapper((curVal) => !curVal)}
           >
-            <i className="fa-regular fa-comments text-lg text-gunmetal-2"></i>
+            <i className="fi fi-rr-comment-alt text-2xl text-black"></i>
           </button>
 
           <p className="text-lg text-gunmetal">{total_comments}</p>
@@ -99,7 +97,7 @@ function BlogInteraction() {
           {username == auhtorUsername ? (
             <Link
               href={`/editor/${blog_id}`}
-              className="underline hover:text-purple-400 duration-200"
+              className="underline text-black hover:text-rose-quartz duration-300"
             >
               Edit
             </Link>
@@ -110,11 +108,11 @@ function BlogInteraction() {
           <Link
             href={`https://twitter.com/intent/tweet?/text=Read ${title}&url=${location.href}`}
           >
-            <i className="fa-brands fa-x-twitter text-xl hover:text-blue-600 duration-200"></i>
+            <i className="fi fi-brands-twitter-alt text-2xl text-black hover:text-rose-quartz duration-300"></i>
           </Link>
         </div>
       </div>
-      <hr className="border-cadet-gray/50 my-2 " />
+      <hr className="border-french-gray/60 my-2 " />
     </>
   );
 }

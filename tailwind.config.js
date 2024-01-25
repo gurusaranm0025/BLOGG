@@ -46,6 +46,8 @@ export const theme = {
         "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       "logo-gradient":
         "linear-gradient(105deg, hsl(186deg 43% 13%) 0%, hsl(192deg 35% 17%) 7%, hsl(197deg 28% 21%) 14%, hsl(203deg 22% 25%) 21%, hsl(210deg 17% 29%) 29%, hsl(218deg 13% 32%) 36%, hsl(230deg 9% 36%) 43%, hsl(249deg 7% 40%) 50%, hsl(270deg 6% 42%) 57%, hsl(294deg 5% 45%) 64%, hsl(318deg 5% 49%) 71%, hsl(333deg 6% 52%) 79%, hsl(344deg 8% 56%) 86%, hsl(354deg 8% 60%) 93%, hsl(3deg 10% 63%) 100%)",
+      "logo-gradient-dark":
+        "linear-gradient(125deg, hsl(185deg 73% 9%) 0%, hsl(207deg 12% 50%) 20%, hsl(214deg 12% 81%) 40%, hsl(276deg 3% 87%) 60%, hsl(305deg 4% 71%) 80%, hsl(3deg 10% 63%) 100%)",
     },
     fontFamily: {
       logo: ['"Fredericka The Great", serif'],
@@ -80,11 +82,11 @@ export const plugins = [
       "french-gray": "#BDBABF",
       "cadet-gray": "#8E9AA9",
       "rose-quartz": "#AA9897",
-      "gunmetal-2": "#062528",
+      "gunmetal-2": "#AA9897",
       black: "#BDBABF",
       red: "#991F1F",
       transparent: "transparent",
-      purple: "#582C8E",
+      purple: "#BDBABF",
       twitter: "#0E71A8",
       grey: "#2A2A2A",
       "dark-grey": "#E7E7E7",

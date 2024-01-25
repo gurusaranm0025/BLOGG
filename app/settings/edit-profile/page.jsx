@@ -21,12 +21,12 @@ function page() {
   } = useContext(UserContext);
 
   const socialLinksImgSrc = {
-    youtube: "fa-brands fa-youtube",
-    instagram: "fa-brands fa-instagram",
-    github: "fa-brands fa-github",
-    facebook: "fa-brands fa-facebook",
-    twitter: "fa-brands fa-x-twitter",
-    website: "fa-solid fa-globe",
+    youtube: "fi fi-brands-youtube",
+    instagram: "fi fi-brands-instagram",
+    github: "fi fi-brands-github",
+    facebook: "fi fi-brands-facebook",
+    twitter: "fi fi-brands-twitter-alt",
+    website: "fi fi-rr-site",
   };
 
   const [profile, setProfile] = useState(profileDataStructure);
@@ -256,7 +256,7 @@ function page() {
                 icon={"user"}
                 placeholder={"Username"}
               />
-              <p>
+              <p className="mt-1">
                 Username is used to search for particular users and it is
                 visible to others.{" "}
               </p>
@@ -265,7 +265,7 @@ function page() {
                 name="bio"
                 maxLength={bioLimit}
                 defaultValue={bio}
-                className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5 font-montserrat font-normal text-md bg-gunmetal/10 rounded-md outline-none selection:bg-rose-quartz focus:outline-rose-quartz/80 focus:bg-gray-300 placeholder:text-gray-800 text-black duration-200"
+                className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5 font-montserrat font-normal text-md bg-grey/50 rounded-md outline-none outline-rose-quartz/30 focus:outline-rose-quartz focus:bg-grey text-black duration-300 border-none"
                 placeholder="Bio"
                 onChange={(e) => setCharcLeft(bioLimit - e.target.value.length)}
               ></textarea>

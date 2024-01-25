@@ -66,7 +66,7 @@ function NavBar() {
 
       <div
         className={
-          "absolute bg-white w-full left-0 top-full mt-0.5 border-b border-french-gray py-[15px] px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
+          "absolute bg-white md:min-w-[150px] w-full md:w-auto left-0 top-full mt-0.5 border-b border-french-gray/80 py-[15px] px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:show " +
           (searchBoxVisibility ? "show" : "hide")
         }
       >
@@ -74,9 +74,9 @@ function NavBar() {
           type="text"
           placeholder="Search"
           onKeyDown={handleSearch}
-          className="peer w-full md:w-auto bg-grey p-[15px] pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-[#FFFFFF] outline-none m-0 focus:outline-gunmetal focus:bg-french-gray duration-300 focus:placeholder:text-white md:pl-14"
+          className="peer w-full bg-grey/50 p-[15px] pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-black outline-none outline-rose-quartz/30 m-0 focus:outline-rose-quartz focus:bg-grey duration-300 md:pl-14 focus:placeholder:text-rose-quartz"
         />
-        <MagnifyingGlassIcon className="absolute w-[1.5rem] right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 md:w-[1.3rem] stroke-black peer-focus:stroke-white" />
+        <MagnifyingGlassIcon className="absolute w-[1.5rem] right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 md:w-[1.3rem] stroke-black peer-focus:stroke-rose-quartz" />
       </div>
 
       <div className="flex items-center gap-3 md:gap-6 ml-auto">
@@ -128,7 +128,7 @@ function NavBar() {
                 }, 200)
               }
             >
-              <button className="w-12 h-12 mt-1">
+              <button className="w-12 h-12 mt-1 hover:opacity-70 duration-300">
                 <img
                   src={profile_img}
                   className="w-full h-full object-cover rounded-full"

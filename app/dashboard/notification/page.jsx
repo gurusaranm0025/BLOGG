@@ -60,13 +60,14 @@ function page() {
     <div>
       <h1 className="max-md:hidden">Recent Notifications</h1>
 
-      <div className="my-8 flex gap-6">
+      <div className="my-8 flex gap-5">
         {filters.map((filterName, i) => {
           return (
             <button
               key={i}
               className={
-                "py-2 " + (filter == filterName ? "btn-dark" : "btn-light")
+                "py-3 text-md md:text-xl " +
+                (filter == filterName ? "btn-dark" : "btn-light")
               }
               onClick={filterHandler}
             >

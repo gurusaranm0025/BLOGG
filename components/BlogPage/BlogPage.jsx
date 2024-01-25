@@ -108,7 +108,11 @@ function BlogPage({ blogId }) {
           <CommentsContainer />
 
           <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
-            <img src={banner} className="aspect-video" alt="banner-image" />
+            <img
+              src={banner}
+              className="aspect-video rounded-lg"
+              alt="banner-image"
+            />
 
             <div className="mt-12 ">
               <h2>{title}</h2>
@@ -120,18 +124,18 @@ function BlogPage({ blogId }) {
                     className="w-12 h-12 rounded-full"
                     alt="profile-image"
                   />
-                  <p className="capitalize">
+                  <p className="capitalize text-black">
                     {fullname} <br />@
                     <Link
                       href={`/user/${authorUsername}`}
-                      className="underline"
+                      className="underline text-black"
                     >
                       {authorUsername}
                     </Link>
                   </p>
                 </div>
 
-                <p className="text-cadet-gray opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
+                <p className="text-black opacity-85 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
                   Published on {getDay(publishedAt)}
                 </p>
               </div>
@@ -153,7 +157,7 @@ function BlogPage({ blogId }) {
 
             {similarBlogs != null && similarBlogs.length ? (
               <>
-                <h1 className="text-2xl mt-14 mb-10 font-medium">
+                <h1 className="text-3xl mt-14 mb-10 font-medium">
                   Similar blogs...
                 </h1>
 

@@ -13,6 +13,7 @@ import { storeInSession } from "@/common/session";
 import { UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
 import { authWithGoogle } from "@/common/firebase";
+import Link from "next/link";
 
 function page({ params }) {
   const router = useRouter();
@@ -129,7 +130,7 @@ function page({ params }) {
                   }}
                 />
                 <button
-                  className="btn-dark center mt-12 py-3 hover:bg-gunmetal-2/60 hover:text-black outline-none hover:outline-french-gray duration-150"
+                  className="btn-dark center mt-12 py-3 hover:text-black outline-none hover:outline-french-gray/30"
                   onClick={(e) => {
                     e.preventDefault();
                     signHandler();
@@ -138,14 +139,14 @@ function page({ params }) {
                   {params.signMethod == "signin" ? "Sign In" : "Sign Up"}
                 </button>
 
-                <div className="relative items-center flex w-full gap-2 my-10 opacity-30 uppercase text-black font-semibold font-montserrat">
+                <div className="relative items-center flex w-full gap-2 my-10 opacity-30 uppercase text-gunmetal font-semibold font-rale">
                   <hr className="w-1/2 border-black" />
                   or
                   <hr className="w-1/2 border-black" />
                 </div>
 
                 <button
-                  className="center outline-none hover:outline-french-gray hover:bg-gunmetal-2/60 duration-200 text-md font-poppins relative btn-dark w-[90%]"
+                  className="center outline-none hover:outline-french-gray/30 text-md font-poppins relative btn-dark w-[90%]"
                   onClick={handleGoogleAuth}
                 >
                   <Image
@@ -159,28 +160,33 @@ function page({ params }) {
                 {params.signMethod == "signin" ? (
                   <p className="mt-8 text-center w-full text-black">
                     Don't have an account?{" "}
-                    <a
-                      href="/signup"
-                      className="text-gunmetal hover:underline duration-200 hover:text-black"
+                    <Link
+                      href="/account/signup"
+                      className="text-gunmetal hover:underline duration-300 hover:text-black"
                     >
                       Join us today!
-                    </a>{" "}
+                    </Link>{" "}
                   </p>
                 ) : (
                   <p className="mt-8 text-center w-full text-black">
                     Already a user?{" "}
-                    <a
-                      href="/signin"
-                      className="text-gunmetal hover:underline duration-200 hover:text-black"
+                    <Link
+                      href="/account/signin"
+                      className="text-gunmetal hover:underline duration-300 hover:text-black"
                     >
                       Sign In.
-                    </a>{" "}
+                    </Link>
                   </p>
                 )}
               </form>
             </div>
-            <div className="hidden md:block md:w-[55vw] h-full">
-              <Image src={maria} alt="maria flower image" />
+            <div className="relative hidden md:block md:w-[55vw] h-full">
+              <Image
+                src={maria}
+                className="absolute -z-10"
+                alt="maria flower image"
+              />
+              <div className="absolute backdrop-blur-[3px] w-full h-full z-10"></div>
             </div>
           </div>
         </AnimationWrapper>

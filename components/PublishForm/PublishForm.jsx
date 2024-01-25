@@ -101,11 +101,11 @@ function PublishForm() {
           className="h-12 w-12 absolute right-[5vw] z-10 top-[5%] lg:top-[10%]"
           onClick={CloseEventHandler}
         >
-          <XMarkIcon className="w-[1.5rem]" />
+          <XMarkIcon className="w-[2.5rem] rounded-full hover:bg-rose-quartz/10 duration-300 p-2" />
         </button>
 
         <div className="max-w-[550px] w-full center ">
-          <p className="text-cadet-gray mb-1">Preview</p>
+          <p className="text-cadet-gray font-semibold mb-1">Preview</p>
 
           <div className="w-full aspect-video overflow-hidden rounded-lg bg-gray-300 mt-4">
             <img src={banner} alt="" />
@@ -120,7 +120,7 @@ function PublishForm() {
         <div className="border-gray-300 lg:border-1 lg:pl-8">
           <p className="mb-2 mt-9 text-gunmetal">Blog Title</p>
           <input
-            className="input-box pl-4 outline-none focus:outline-french-gray/80 border-none bg-french-gray/50 focus:bg-white hover:bg-grey duration-300"
+            className="input-box pl-4 outline-none outline-rose-quartz/30 focus:outline-rose-quartz border-none bg-grey/50 focus:bg-grey hover:bg-rose-quartz/10 duration-300"
             type="text"
             placeholder="Blog title"
             defaultValue={title}
@@ -136,7 +136,7 @@ function PublishForm() {
             defaultValue={des}
             onChange={desChangeHandler}
             onKeyDown={onKeyDownHandler}
-            className="h-40 resize-none leading-7 input-box pl-4 outline-none focus:outline-french-gray/30 hover:bg-grey bg-french-gray/60 duration-300 focus:bg-white border-none"
+            className="h-40 resize-none leading-7 input-box pl-4 outline-none outline-rose-quartz/30 focus:outline-rose-quartz hover:bg-rose-quartz/10 bg-grey/50 duration-300 focus:bg-grey border-none"
           ></textarea>
           <p className="mt-1 text-gunmetal text-sm text-right">
             {200 - des.length} characters left.
@@ -146,12 +146,12 @@ function PublishForm() {
             Topics - (Help in searching and ranking your blog post.)
           </p>
 
-          <div className="relative input-box pl-2 py-2 pb-4 bg-french-gray/60 border-none">
+          <div className="relative input-box pl-2 py-2 pb-4 bg-rose-quartz/10 border-none">
             <input
               type="text"
               placeholder="Topics"
               onKeyDown={tagsKeyDownHandler}
-              className="sticky top-0 left-0 pl-4 mb-3 input-box bg-french-gray/60 hover:bg-grey focus:bg-white outline-none focus:border-2 focus:outline-french-gray/30 duration-300 placeholder:text-black"
+              className="sticky m-2 top-0 left-0 pl-4 mb-3 input-box bg-grey/50 hover:bg-rose-quartz/10 focus:bg-grey border-none outline-none outline-rose-quartz/30 focus:outline-rose-quartz duration-300 w-[99%]"
             />
 
             {tags.map((tag, index) => {

@@ -69,19 +69,17 @@ function CommentsContainer() {
       }
     >
       <div className="relative">
-        <h1 className="text-xl font-medium">Comments</h1>
-        <p className="text-lg mt-2 w-[70%] text-cadet-gray line-clamp-1">
-          {title}
-        </p>
+        <h1 className="text-2xl font-medium">Comments</h1>
+        <p className="text-xl mt-2 w-[70%] text-black line-clamp-1">{title}</p>
 
         <button
-          className="absolute top-0 right-0 flex items-center justify-center w-12 h-12 rounded-full bg-gray-300/50"
+          className="absolute top-0 right-0 flex items-center justify-center w-12 h-12 rounded-full outline-none outline-rose-quartz/30 hover:outline-rose-quartz hover:bg-rose-quartz/20 duration-300"
           onClick={() => setCommentsWrapper((curVal) => !curVal)}
         >
           <XMarkIcon className="w-[2rem] absolute" />
         </button>
       </div>
-      <hr className="border-gray-300  my-8 w-[120%] -ml-10 " />
+      <hr className="border-french-gray/60  my-8 w-[120%] -ml-10 " />
 
       <CommentField action={"comment"} />
 

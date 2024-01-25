@@ -57,7 +57,7 @@ function NotificationCommentField({
         value={comment}
         placeholder="Leave a reply..."
         onChange={(e) => setComment(e.target.value)}
-        className="input-box bg-gray-300/50 focus:bg-white outline-none focus:outline-french-gray duration-300 pl-5 placeholder:text-cadet-gray resize-none h-[150px] overflow-auto"
+        className="input-box border-none bg-grey/50 focus:bg-grey hover:bg-rose-quartz/10 outline-none outline-rose-quartz/30 focus:outline-rose-quartz duration-300 pl-5 focus:placeholder:text-black placeholder:text-cadet-gray resize-none h-[150px] overflow-auto"
       ></textarea>
       <button
         onClick={handleComments}

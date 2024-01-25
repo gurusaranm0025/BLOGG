@@ -8,6 +8,7 @@ import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { createBlog } from "@/server/publishBlog";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 let CustomEditor = dynamic(() => import("./CustomEditor"), { ssr: false });
 
@@ -42,9 +43,9 @@ function BlogEditor() {
   }
 
   function PublishHandler() {
-    if (!banner.length) {
-      return toast.error("Upload a blog banner to publish it.");
-    }
+    // if (!banner.length) {
+    //   return toast.error("Upload a blog banner to publish it.");
+    // }
 
     if (!title.length) {
       toast.error("Give your blog a title to publish it..");
@@ -119,7 +120,9 @@ function BlogEditor() {
     <>
       <Toaster />
       <nav className="navbar">
-        <Logo />
+        <Link href={"/"}>
+          <Logo />
+        </Link>
         <p className="max-md:hidden text-back line-clamp-1 w-full">
           {title.length ? title : "New Blog"}
         </p>
@@ -137,13 +140,13 @@ function BlogEditor() {
       <AnimationWrapper>
         <section>
           <div className="mx-auto max-w-[900px] w-full">
-            <div className="relative aspect-video bg-white border-4 border-french-gray/70 hover:opacity-80 duration-200">
+            <div className="relative aspect-video bg-white border-4 border-french-gray/90 hover:opacity-60 duration-2300">
               <ImageUpload />
             </div>
             <textarea
               defaultValue={title}
               placeholder="Blog Title"
-              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 bg-white"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-50 bg-white"
               name=""
               id=""
               onKeyDown={handleTitleKeyDown}

@@ -98,11 +98,11 @@ function CommentField({
         value={comment}
         placeholder="Leave a comment"
         onChange={(e) => setComment(e.target.value)}
-        className="input-box bg-gray-300/50 focus:bg-white outline-none focus:outline-french-gray duration-300 pl-5 placeholder:text-cadet-gray resize-none h-[150px] overflow-auto"
+        className="input-box bg-grey/50 focus:bg-grey outline-none outline-rose-quartz/30 focus:outline-rose-quartz duration-300 pl-5 placeholder:text-black resize-none h-[150px] overflow-auto border-none"
       ></textarea>
       <button
         onClick={handleComments}
-        className="btn-dark mt-5 px-10 capitalize"
+        className="btn-dark mt-5 px-9 capitalize"
       >
         {action}
       </button>

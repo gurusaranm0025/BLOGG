@@ -64,7 +64,7 @@ function NotificationCard({ data, index, notificationState }) {
   }
 
   return (
-    <div className="p-6 border-b border-cadet-gray border-l-black">
+    <div className="p-6 border-b border-french-gray/60 border-l-black/60">
       <div className="flex gap-5 mb-3">
         <img
           src={profile_img}
@@ -98,7 +98,7 @@ function NotificationCard({ data, index, notificationState }) {
           ) : (
             <Link
               href={`/blog/${blog_id}`}
-              className="font-medium text-cadet-gray hover:underline line-clamp-1"
+              className="font-medium text-dark-grey hover:underline line-clamp-1"
             >{`"${title}"`}</Link>
           )}
         </div>
@@ -110,13 +110,13 @@ function NotificationCard({ data, index, notificationState }) {
         ""
       )}
 
-      <div className="ml-14 pl-5 mt-3 text-cadet-gray flex gap-8">
+      <div className="ml-14 pl-5 mt-3 text-cadet-gray/80 flex gap-8">
         <p>{getDay(createdAt)}</p>
         {type != "like" ? (
           <>
             {!reply ? (
               <button
-                className="underline hover:text-black duration-200"
+                className="underline hover:text-black"
                 onClick={handleReplyClick}
               >
                 reply
@@ -125,7 +125,7 @@ function NotificationCard({ data, index, notificationState }) {
               ""
             )}
             <button
-              className="underline hover:text-red-500 duration-200"
+              className="underline hover:text-red"
               onClick={(e) => handleDelete(comment._id, "comment", e.target)}
             >
               delete
@@ -153,7 +153,7 @@ function NotificationCard({ data, index, notificationState }) {
       )}
 
       {reply ? (
-        <div className="ml-20 p-5 bg-gray-200 rounded-md mt-5 ">
+        <div className="ml-20 p-5 bg-grey/30 rounded-md mt-5 ">
           <div className="flex gap-3 mb-3">
             <img
               src={author_profile_img}
@@ -185,7 +185,7 @@ function NotificationCard({ data, index, notificationState }) {
           <p className="ml-14 font-noto text-xl my-2">{reply.comment}</p>
 
           <button
-            className="underline hover:text-red-500 duration-200 ml-14 mt-2"
+            className="underline hover:text-red ml-14 mt-2"
             onClick={(e) => handleDelete(comment._id, "reply", e.target)}
           >
             delete
