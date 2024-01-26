@@ -37,6 +37,6 @@ next-env.d.ts
 
 #firebase
 # bloom-blogging-firebase-adminsdk.json
-firebaseConfig.js
+# firebaseConfig.js
 .vscode
 .next
