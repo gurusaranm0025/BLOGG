@@ -51,7 +51,7 @@
   }
 
   .btn-light {
-    @apply whitespace-nowrap rounded-full py-3 px-6 text-lg capitalize hover:text-black hover:bg-french-gray/30 bg-grey text-black duration-300 outline-none hover:outline-french-gray/30;
+    @apply whitespace-nowrap rounded-full py-3 px-6 text-lg capitalize hover:text-[#FFFFFF]/75 hover:bg-gunmetal-2/30 bg-grey text-black duration-300 outline-none hover:outline-french-gray/30;
   }
 
   .input-box {

@@ -1,11 +1,9 @@
 import Logo from "@/components/Logo/Logo";
-import NavBar from "@/components/NavBar/NavBar";
 import pageNotFound from "@/public/404.svg";
 
 function NotFound() {
   return (
     <>
-      <NavBar />
       <section
         className="h-cover flex relative flex-col
    items-center gap-20 text-center "

@@ -59,7 +59,7 @@ function NavBar({ className }) {
 
   return (
     <nav className={"navbar z-50 " + className}>
-      <a href="/">
+      <a href="/" className="max-md:w-[20%]">
         <Logo />
       </a>
 
@@ -78,9 +78,9 @@ function NavBar({ className }) {
         <MagnifyingGlassIcon className="absolute w-[1.5rem] right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 md:w-[1.3rem] stroke-black peer-focus:stroke-rose-quartz" />
       </div>
 
-      <div className="flex items-center gap-3 md:gap-6 ml-auto">
+      <div className="flex max-md:w-[60%] max-md:justify-end items-center gap-3 md:gap-6 ml-auto">
         <button
-          className="md:hidden bg-grey hover:bg-french-gray/30 duration-300 w-12 h-12 rounded-full flex items-center justify-center"
+          className="md:hidden bg-grey hover:bg-rose-quartz/20 outline-none hover:outline-rose-quartz/30 duration-300 w-12 h-12 rounded-full flex items-center justify-center"
           onClick={() => setSearchBoxVisibility((currVal) => !currVal)}
         >
           <MagnifyingGlassIcon className="w-[1.5rem]" />
@@ -88,14 +88,14 @@ function NavBar({ className }) {
 
         <a
           href="/editor"
-          className="hidden md:flex gap-2 text-french-gray hover:text-black rounded-lg bg-grey/50 hover:bg-french-gray/30 p-3 px-4 duration-300"
+          className="hidden md:flex gap-2 text-french-gray hover:text-black rounded-lg bg-grey/50 outline-none hover:outline-rose-quartz/30 hover:bg-rose-quartz/20 p-3 px-4 duration-300"
         >
           <PencilSquareIcon className="w-[1.1rem]" />
           <p>Write</p>
         </a>
 
         <button
-          className="w-12 h-12 bg-grey rounded-full relative hover:bg-french-gray/30 duration-300"
+          className="w-12 h-12 bg-grey rounded-full relative hover:bg-rose-quartz/20 outline-none hover:outline-rose-quartz/30 duration-300"
           onClick={changeTheme}
         >
           {theme == "dark" ? (
@@ -127,7 +127,7 @@ function NavBar({ className }) {
                 }, 200)
               }
             >
-              <button className="w-12 h-12 mt-1 hover:opacity-70 duration-300">
+              <button className="w-12 h-12 mr-1 mt-1 hover:opacity-70 duration-300">
                 <img
                   src={profile_img}
                   className="w-full h-full object-cover rounded-full"
@@ -139,12 +139,12 @@ function NavBar({ className }) {
           </>
         ) : (
           <>
-            <a href="/account/signin" className="btn-dark py-2 duration-200">
+            <a href="/account/signin" className="btn-dark py-3 duration-300">
               Sign In
             </a>
             <a
               href="/account/signup"
-              className="btn-light py-2 hidden md:block duration-200"
+              className="btn-light py-3 hidden md:block duration-300"
             >
               Sign Up
             </a>

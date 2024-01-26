@@ -168,7 +168,7 @@ function HomePage() {
         </div>
 
         {/* filters and trending */}
-        <div className="max-w-[500px] min-w-[40%] lg:min-w-[400px] border-l border-gray-300 pl-8 pt-3 max-md:hidden">
+        <div className="max-w-[500px] min-w-[40%] lg:min-w-[400px] border-l border-french-gray/60 pl-8 pt-3 max-md:hidden">
           <div className="flex flex-col gap-10">
             <div>
               <h1 className="font-medium text-gunmetal text-xl mb-8">
