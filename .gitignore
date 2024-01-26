@@ -36,7 +36,7 @@ yarn-error.log*
 next-env.d.ts
 
 #firebase
-bloom-blogging-firebase-adminsdk.json
+# bloom-blogging-firebase-adminsdk.json
 firebaseConfig.js
 .vscode
 .next
