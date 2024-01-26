@@ -4,9 +4,6 @@ import NavBar from "../NavBar/NavBar";
 
 function LayoutProvider({ children }) {
   const pathname = usePathname();
-
-  console.log("pathname =>", pathname);
-
   return (
     <>
       {pathname.includes("/account") || pathname.includes("/editor") ? (
@@ -14,6 +11,7 @@ function LayoutProvider({ children }) {
       ) : (
         <NavBar />
       )}
+
       {children}
     </>
   );

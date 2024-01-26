@@ -26,9 +26,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Providers>
-          <AnimationWrapper>
-            <LayoutProvider>{children}</LayoutProvider>
-          </AnimationWrapper>
+          <LayoutProvider>{children}</LayoutProvider>
         </Providers>
       </body>
     </html>

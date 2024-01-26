@@ -10,12 +10,15 @@ import { credValidityCheck, googleAuth } from "@/server/signActions";
 import { useContext, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
-import { UserContext } from "@/common/ContextProvider";
+import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
 import { authWithGoogle } from "@/common/firebase";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 
 function SignMethodPage({ params }) {
   const router = useRouter();
+
+  let { theme, setTheme } = useContext(ThemeContext);
 
   let {
     userAuth: { access_token },
@@ -44,7 +47,7 @@ function SignMethodPage({ params }) {
     }
 
     //success
-    if (credResult.status == 200) {
+    if (credResult.status === 200) {
       toast.success("Success");
       storeInSession("user", JSON.stringify(credResult));
       setUserAuth(credResult);
@@ -59,8 +62,8 @@ function SignMethodPage({ params }) {
     e.preventDefault();
     authWithGoogle()
       .then(async (user) => {
-        const credResult = await googleAuth((access_token = user.accessToken));
-        if (credResult.status == 200) {
+        const credResult = await googleAuth(user.accessToken);
+        if (credResult.status === 200) {
           storeInSession("user", JSON.stringify(credResult));
           setUserAuth(credResult);
         } else {
@@ -72,19 +75,42 @@ function SignMethodPage({ params }) {
         return console.log(err);
       });
   }
+
+  function changeTheme() {
+    let newTheme = theme == "dark" ? "light" : "dark";
+
+    setTheme(newTheme);
+
+    document.body.setAttribute("data-theme", newTheme);
+
+    storeInSession("theme", newTheme);
+  }
+  // className=" mt-[10px] ml-[10px] md:mt-[1vh] md:ml-[2vw]"
   return (
     <>
       {access_token ? (
         router.push("/")
       ) : (
-        <AnimationWrapper className="h-full h-cover">
-          <div className="flex h-full w-full">
+        <AnimationWrapper className="h-full w-full">
+          <div className="relative backdrop:filter-white/60 flex h-full w-full z-10">
+            <button
+              className="absolute right-0 top-3 mr-5 outline-none hover:outline-rose-quartz/70 w-12 h-12 bg-grey/75 rounded-full hover:bg-rose-quartz/50 duration-300"
+              onClick={changeTheme}
+            >
+              {theme == "dark" ? (
+                <SunIcon className="w-[1.5rem] block mx-auto my-auto" />
+              ) : (
+                <MoonIcon className="w-[1.5rem] block mx-auto my-auto" />
+              )}
+            </button>
+
             <Toaster />
-            <a href="/">
-              <Logo className="absolute mt-[10px] ml-[10px] md:mt-[1vh] md:ml-[2vw]" />
-            </a>
-            <div className="w-full md:w-[45vw] h-full flex items-center justify-center md:items-start">
-              <form className="md:mt-[25vh] w-[80%] max-w-[400px] md:max-w-[450px]">
+
+            <div className="w-full md:w-[45vw] h-full flex flex-1 items-center justify-center md:items-start">
+              <form className="md:mt-[17vh] w-[85%] max-w-[500px] md:max-w-[450px] bg-white/75 outline-none outline-white/40 p-5 py-10 rounded-lg shadow-2xl shadow-black/60">
+                <a href="/">
+                  <Logo />
+                </a>
                 <h2 className="font-rale">
                   {params.signMethod === "signin"
                     ? "WELCOME"
@@ -128,8 +154,9 @@ function SignMethodPage({ params }) {
                     });
                   }}
                 />
+
                 <button
-                  className="btn-dark center mt-12 py-3 hover:text-black outline-none hover:outline-french-gray/30"
+                  className="btn-dark center mt-12 py-3 hover:text-black outline-none hover:outline-rose-quartz/80"
                   onClick={(e) => {
                     e.preventDefault();
                     signHandler();
@@ -145,7 +172,7 @@ function SignMethodPage({ params }) {
                 </div>
 
                 <button
-                  className="center outline-none hover:outline-french-gray/30 text-md font-poppins relative btn-dark w-[90%]"
+                  className="center outline-none hover:outline-rose-quartz/80 text-md font-poppins relative btn-dark w-[90%]"
                   onClick={handleGoogleAuth}
                 >
                   <Image
@@ -179,12 +206,16 @@ function SignMethodPage({ params }) {
                 )}
               </form>
             </div>
-            <div className="relative hidden md:block md:w-[55vw] h-full">
-              <Image
-                src={maria}
-                className="absolute"
-                alt="maria flower image"
-              />
+
+            <div className="absolute -z-10 bg-transparent w-full h-full ">
+              <div className="relative w-full h-full">
+                <Image
+                  src={maria}
+                  className="absolute top-0 -z-20 left-0 h-full object-cover"
+                  alt="maria flower image"
+                />
+                <div className="backdrop-blur-md w-full h-full duration-300"></div>
+              </div>
             </div>
           </div>
         </AnimationWrapper>

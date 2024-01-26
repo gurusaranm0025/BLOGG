@@ -62,7 +62,7 @@ function Input({
         id={id}
         defaultValue={value}
         className={
-          "peer/input border-none pl-12 input-box w-full font-montserrat font-normal text-md h-[55px] bg-grey/50 p-4 rounded-md outline-none selection:bg-rose-quartz outline-rose-quartz/30 focus:outline-rose-quartz focus:bg-grey placeholder:text-dark-grey text-black duration-300 mt-6 " +
+          "peer/input border-none pl-12 input-box w-full font-montserrat font-normal text-md h-[55px] bg-grey/50 p-4 rounded-md outline-none selection:bg-rose-quartz outline-rose-quartz/50 focus:outline-rose-quartz focus:bg-grey placeholder:text-dark-grey text-black duration-300 mt-6 " +
           (type === "password" && "pr-12")
         }
       />

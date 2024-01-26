@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { newNotification } from "@/server/fetchBlogs";
 import { storeInSession } from "@/common/session";
 
-function NavBar() {
+function NavBar({ className }) {
   const router = useRouter();
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
   const [userNavPanel, setUserNavPanel] = useState(false);
@@ -58,7 +58,7 @@ function NavBar() {
   }
 
   return (
-    <nav className="navbar z-50">
+    <nav className={"navbar z-50 " + className}>
       <a href="/">
         <Logo />
       </a>
