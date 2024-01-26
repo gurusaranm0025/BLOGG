@@ -1,6 +1,8 @@
 import NavBar from "@/components/NavBar/NavBar";
 import "./globals.css";
 import Providers from "@/common/ContextProvider";
+import LayoutProvider from "@/components/Layout/LayoutProvider";
+import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 
 export const metadata = {
   title: "Bloom | Blogging Space",
@@ -24,8 +26,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Providers>
-          <NavBar />
-          {children}
+          <AnimationWrapper>
+            <LayoutProvider>{children}</LayoutProvider>
+          </AnimationWrapper>
         </Providers>
       </body>
     </html>

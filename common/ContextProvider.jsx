@@ -27,7 +27,7 @@ export default function Providers({ children }) {
       : setUserAuth({ access_token: null });
 
     if (typeof document !== "undefined") {
-      document.body.setAttribute("data-theme", "light");
+      document.body.setAttribute("data-theme", "dark");
       setTimeout(() => {
         if (themeInSession) {
           setTheme(() => {
@@ -38,7 +38,7 @@ export default function Providers({ children }) {
         } else {
           document.body.setAttribute("data-theme", theme);
         }
-      }, 1000);
+      }, 200);
     }
   }, []);
 
