@@ -77,7 +77,7 @@ function SignMethodPage({ params }) {
       {access_token ? (
         router.push("/")
       ) : (
-        <AnimationWrapper className="h-full">
+        <AnimationWrapper className="h-full h-cover">
           <div className="flex h-full w-full">
             <Toaster />
             <a href="/">
@@ -182,10 +182,9 @@ function SignMethodPage({ params }) {
             <div className="relative hidden md:block md:w-[55vw] h-full">
               <Image
                 src={maria}
-                className="absolute -z-10"
+                className="absolute"
                 alt="maria flower image"
               />
-              <div className="absolute backdrop-blur-[3px] w-full h-full z-10"></div>
             </div>
           </div>
         </AnimationWrapper>
