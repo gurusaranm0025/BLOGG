@@ -1,8 +1,6 @@
 import EditorPage from "@/components/Editor/EditorPage";
 
-function page({ params }) {
-  const blog_id = params.blog_id;
-
+function page() {
   return <EditorPage />;
 }
 

@@ -3,7 +3,6 @@ import { getBlog, searchBlogs } from "@/server/fetchBlogs";
 import { createContext, useEffect, useState } from "react";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import Loader from "../Loader/Loader";
-import Link from "next/link";
 import { getDay } from "../HomePage/BlogPostCard/date";
 import BlogInteraction from "./BlogInteraction";
 import BlogPostCard from "../HomePage/BlogPostCard/BlogPostCard";
@@ -126,12 +125,12 @@ function BlogPage({ blogId }) {
                   />
                   <p className="capitalize text-black">
                     {fullname} <br />@
-                    <Link
+                    <a
                       href={`/user/${authorUsername}`}
                       className="underline text-black"
                     >
                       {authorUsername}
-                    </Link>
+                    </a>
                   </p>
                 </div>
 

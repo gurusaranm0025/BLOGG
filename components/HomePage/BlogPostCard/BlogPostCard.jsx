@@ -1,6 +1,5 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { getDay } from "./date";
-import Link from "next/link";
 
 function BlogPostCard({ content, author }) {
   let {
@@ -15,7 +14,7 @@ function BlogPostCard({ content, author }) {
   let { profile_img, username, fullname } = author;
 
   return (
-    <Link
+    <a
       href={`/blog/${id}`}
       className="flex gap-8 items-center border-b border-french-gray/50 hover:opacity-80 pb-5 mb-4 duration-300"
     >
@@ -53,7 +52,7 @@ function BlogPostCard({ content, author }) {
           className="w-full h-full aspect-square object-cover"
         />
       </div>
-    </Link>
+    </a>
   );
 }
 

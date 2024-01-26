@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getDay } from "../HomePage/BlogPostCard/date";
 import { useContext, useState } from "react";
 import NotificationCommentField from "./NotificationCommentField";
@@ -76,12 +75,12 @@ function NotificationCard({ data, index, notificationState }) {
             <span className="lg:inline-block hidden capitalize">
               {fullname}
             </span>
-            <Link
+            <a
               href={`/user/${username}`}
               className="mx-1 text-black underline text-lg"
             >
               @{username}
-            </Link>
+            </a>
             <span className="font-normal text-sm">
               {type == "like"
                 ? "liked your blog"
@@ -96,10 +95,10 @@ function NotificationCard({ data, index, notificationState }) {
               <p>{replied_on_comment.comment}</p>
             </div>
           ) : (
-            <Link
+            <a
               href={`/blog/${blog_id}`}
               className="font-medium text-dark-grey hover:underline line-clamp-1"
-            >{`"${title}"`}</Link>
+            >{`"${title}"`}</a>
           )}
         </div>
       </div>
@@ -163,21 +162,21 @@ function NotificationCard({ data, index, notificationState }) {
 
             <div>
               <h1 className="font-medium text-xl text-cadet-gray link">
-                <Link
+                <a
                   className="mx-1 text-black underline"
                   href={`/user/${author_username}`}
                 >
                   @{author_username}
-                </Link>
+                </a>
 
                 <span className="font-normal">replied to</span>
 
-                <Link
+                <a
                   className="mx-1 text-black underline"
                   href={`/user/${username}`}
                 >
                   @{username}
-                </Link>
+                </a>
               </h1>
             </div>
           </div>

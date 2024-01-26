@@ -60,7 +60,7 @@ function EditorPage() {
       }}
     >
       {access_token === null ? (
-        router.push("/account/signin")
+        router.push("/account/signin/page.html")
       ) : loading ? (
         <Loader />
       ) : editorState === "editor" ? (

@@ -1,9 +1,8 @@
-import NavBar from "@/components/NavBar/NavBar";
-import "./globals.css";
+import "@/app/globals.css";
 import Providers from "@/common/ContextProvider";
 
 export const metadata = {
-  title: "Bloom | Blogging Space",
+  title: "Bloom | Account Sign in / Sign up",
   description: "Bloom Blog project by GS.",
 };
 
@@ -22,12 +21,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>
-        <Providers>
-          <NavBar />
-          {children}
-        </Providers>
-      </body>
+      <Providers>
+        <body>{children}</body>
+      </Providers>
     </html>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 import { useContext, useEffect } from "react";
 import { BlogContext } from "./BlogPage";
-import Link from "next/link";
 import { UserContext } from "@/common/ContextProvider";
 import toast, { Toaster } from "react-hot-toast";
 import { getIsLikedByUser, likeBlog } from "@/server/fetchBlogs";
@@ -95,21 +94,21 @@ function BlogInteraction() {
 
         <div className="flex gap-6 items-center">
           {username == auhtorUsername ? (
-            <Link
+            <a
               href={`/editor/${blog_id}`}
               className="underline text-black hover:text-rose-quartz duration-300"
             >
               Edit
-            </Link>
+            </a>
           ) : (
             ""
           )}
 
-          <Link
+          <a
             href={`https://twitter.com/intent/tweet?/text=Read ${title}&url=${location.href}`}
           >
             <i className="fi fi-brands-twitter-alt text-2xl text-black hover:text-rose-quartz duration-300"></i>
-          </Link>
+          </a>
         </div>
       </div>
       <hr className="border-french-gray/60 my-2 " />

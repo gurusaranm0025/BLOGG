@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { getDay } from "../HomePage/BlogPostCard/date";
 import { useContext, useState } from "react";
 import { UserContext } from "@/common/ContextProvider";
@@ -51,23 +50,23 @@ export function ManagePublishedBlogsCard({ blog }) {
 
         <div className="flex flex-col justify-between py-2 w-full min-w-[300px]">
           <div>
-            <Link
+            <a
               href={`/blog/${blog_id}`}
               className="blog-title mb-4 hover:underline"
             >
               {title}
-            </Link>
+            </a>
 
             <p className="line-clamp-1 ">Published on {getDay(publishedAt)}</p>
           </div>
 
           <div className="flex gap-6 mt-3 ">
-            <Link
+            <a
               href={`/editor/${blog_id}`}
               className="px-4 py-2 underline hover:bg-rose-quartz/10 duration-300 rounded-lg hover:text-black"
             >
               Edit
-            </Link>
+            </a>
 
             <button
               className="lg:hidden px-4 py-2 underline hover:bg-rose-quartz/10 rounded-lg hover:text-black duration-300 text-center"
@@ -125,9 +124,9 @@ export function ManageDraftBlogsCard({ blog }) {
         <p>{des.length ? des : "No description."}</p>
 
         <div className="flex gap-6 mt-3">
-          <Link href={`/editor/${blog_id}`} className="pr-4 py-2 underline">
+          <a href={`/editor/${blog_id}`} className="pr-4 py-2 underline">
             Edit
-          </Link>
+          </a>
 
           <button
             className="pr-4 py-2 underline text-red"

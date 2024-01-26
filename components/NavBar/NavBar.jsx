@@ -12,7 +12,6 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import UserNavigationPanel from "./UserNavigationPanel";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { newNotification } from "@/server/fetchBlogs";
 import { storeInSession } from "@/common/session";
 
@@ -29,14 +28,6 @@ function NavBar() {
 
   let { theme, setTheme } = useContext(ThemeContext);
 
-  function handleSearch(e) {
-    let query = e.target.value;
-
-    if (e.keyCode == 13 && query.length) {
-      router.push(`/search/${query}`);
-    }
-  }
-
   useEffect(() => {
     if (access_token) {
       newNotification({ token: access_token }).then(
@@ -47,6 +38,14 @@ function NavBar() {
       );
     }
   }, [access_token]);
+
+  function handleSearch(e) {
+    let query = e.target.value;
+
+    if (e.keyCode == 13 && query.length) {
+      router.push(`/search/${query}`);
+    }
+  }
 
   function changeTheme() {
     let newTheme = theme == "dark" ? "light" : "dark";
@@ -60,9 +59,9 @@ function NavBar() {
 
   return (
     <nav className="navbar z-50">
-      <Link href="/">
+      <a href="/">
         <Logo />
-      </Link>
+      </a>
 
       <div
         className={
@@ -87,13 +86,13 @@ function NavBar() {
           <MagnifyingGlassIcon className="w-[1.5rem]" />
         </button>
 
-        <Link
+        <a
           href="/editor"
           className="hidden md:flex gap-2 text-french-gray hover:text-black rounded-lg bg-grey/50 hover:bg-french-gray/30 p-3 px-4 duration-300"
         >
           <PencilSquareIcon className="w-[1.1rem]" />
           <p>Write</p>
-        </Link>
+        </a>
 
         <button
           className="w-12 h-12 bg-grey rounded-full relative hover:bg-french-gray/30 duration-300"
@@ -108,7 +107,7 @@ function NavBar() {
 
         {access_token ? (
           <>
-            <Link href="/dashboard/notification">
+            <a href="/dashboard/notification">
               <button className="w-12 h-12 bg-grey rounded-full relative hover:bg-french-gray/30 duration-300">
                 <BellIcon className="w-[1.5rem] block mx-auto my-auto" />
                 {new_notification_available ? (
@@ -117,7 +116,7 @@ function NavBar() {
                   ""
                 )}
               </button>
-            </Link>
+            </a>
 
             <div
               className="relative"
@@ -140,15 +139,15 @@ function NavBar() {
           </>
         ) : (
           <>
-            <Link href="/account/signin" className="btn-dark py-2 duration-200">
+            <a href="/account/signin" className="btn-dark py-2 duration-200">
               Sign In
-            </Link>
-            <Link
+            </a>
+            <a
               href="/account/signup"
               className="btn-light py-2 hidden md:block duration-200"
             >
               Sign Up
-            </Link>
+            </a>
           </>
         )}
       </div>

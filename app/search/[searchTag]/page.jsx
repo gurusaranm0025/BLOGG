@@ -9,7 +9,6 @@ import NavBar from "@/components/NavBar/NavBar";
 import UserCard from "@/components/SearchPage/UserCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import { searchBlogs, searchUsers } from "@/server/fetchBlogs";
-import { UsersIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 function page({ params }) {
@@ -83,7 +82,7 @@ function page({ params }) {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
 
       <section className="flex h-cover justify-center gap-10">
         <div className="w-full">

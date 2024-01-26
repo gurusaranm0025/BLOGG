@@ -1,12 +1,10 @@
-import Link from "next/link";
-
 function UserCard({ user }) {
   let {
     personal_info: { fullname, username, profile_img },
   } = user;
 
   return (
-    <Link
+    <a
       href={`/user/${username}`}
       className="flex gap-5 items-center mb-5 hover:opacity-80 duration-300"
     >
@@ -20,7 +18,7 @@ function UserCard({ user }) {
         <h1 className="font-medium text-lg line-clamp-2">{fullname}</h1>
         <p className="text-gunmetal-2">@{username}</p>
       </div>
-    </Link>
+    </a>
   );
 }
 

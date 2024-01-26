@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getDay } from "./date";
 
 function MinimalBlogPost({ blog, index }) {
@@ -12,7 +11,7 @@ function MinimalBlogPost({ blog, index }) {
   } = blog;
 
   return (
-    <Link
+    <a
       href={`/blog/${id}`}
       className="flex gap-5 mb-9 hover:opacity-80 duration-300 border-b border-french-gray/30 pb-3"
     >
@@ -35,7 +34,7 @@ function MinimalBlogPost({ blog, index }) {
 
         <h1 className="blog-title">{title}</h1>
       </div>
-    </Link>
+    </a>
   );
 }
 

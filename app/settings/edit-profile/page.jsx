@@ -1,6 +1,6 @@
 "use client";
 
-import { profileDataStructure } from "@/app/user/[id]/page";
+import { profileDataStructure } from "@/components/PageComponents/User/id/UserIdPage";
 import { UserContext } from "@/common/ContextProvider";
 import { storeInSession } from "@/common/session";
 import { uploadImage } from "@/components/ImageUpload/uploadImage";

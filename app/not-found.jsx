@@ -1,7 +1,6 @@
 import Logo from "@/components/Logo/Logo";
 import NavBar from "@/components/NavBar/NavBar";
 import pageNotFound from "@/public/404.svg";
-import Link from "next/link";
 
 function NotFound() {
   return (
@@ -22,12 +21,12 @@ function NotFound() {
         </h1>
         <p className="text-cadet-gray leading-7 -mt-8 text-xl font-montserrat">
           The page you are looking for does not exists. Head back to{" "}
-          <Link
+          <a
             href={"/"}
             className="text-black underline hover:text-rose-quartz duration-300"
           >
             home page
-          </Link>
+          </a>
         </p>
 
         <div className="mt-auto">

@@ -8,7 +8,6 @@ import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { createBlog } from "@/server/publishBlog";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 
 let CustomEditor = dynamic(() => import("./CustomEditor"), { ssr: false });
 
@@ -120,9 +119,9 @@ function BlogEditor() {
     <>
       <Toaster />
       <nav className="navbar">
-        <Link href={"/"}>
+        <a href={"/"}>
           <Logo />
-        </Link>
+        </a>
         <p className="max-md:hidden text-back line-clamp-1 w-full">
           {title.length ? title : "New Blog"}
         </p>

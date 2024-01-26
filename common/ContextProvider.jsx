@@ -26,14 +26,19 @@ export default function Providers({ children }) {
       ? setUserAuth(JSON.parse(userSession))
       : setUserAuth({ access_token: null });
 
-    if (themeInSession) {
-      setTheme(() => {
-        document.body.setAttribute("data-theme", themeInSession);
+    if (typeof document !== "undefined") {
+      document.body.setAttribute("data-theme", "light");
+      setTimeout(() => {
+        if (themeInSession) {
+          setTheme(() => {
+            document.body.setAttribute("data-theme", themeInSession);
 
-        return themeInSession;
-      });
-    } else {
-      document.body.setAttribute("data-theme", theme);
+            return themeInSession;
+          });
+        } else {
+          document.body.setAttribute("data-theme", theme);
+        }
+      }, 1000);
     }
   }, []);
 

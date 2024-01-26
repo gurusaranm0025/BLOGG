@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { tokenVerify } from "./fetchBlogs";
 
 //google auth
-import admin, { messaging } from "firebase-admin";
+import admin from "firebase-admin";
 import serviceAccountKey from "../bloom-blogging-firebase-adminsdk.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
 let app =
@@ -19,7 +19,6 @@ let app =
 
 //Schema imports
 import User from "@/Schema/User.js";
-import { resolve } from "styled-jsx/css";
 
 //regex
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email

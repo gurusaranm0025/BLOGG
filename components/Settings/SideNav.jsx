@@ -1,7 +1,6 @@
 "use client";
 import { UserContext } from "@/common/ContextProvider";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
@@ -49,7 +48,6 @@ function SideNav({ children }) {
             onClick={changePageState}
             className="p-5 hover:opacity-70 duration-300"
           >
-            {/* <i className="fa-solid fa-bars-staggered pointer-events-none"></i> */}
             <Bars3BottomLeftIcon className="w-[1.2rem] md:w-[1.5rem] pointer-events-none" />
           </button>
           <button
@@ -76,7 +74,7 @@ function SideNav({ children }) {
           <h1 className="text-xl text-gunmetal mb-3">DASHBOARD</h1>
           <hr className="border-french-gray/60 -ml-6 mb-8 mr-6" />
 
-          <Link
+          <a
             href={"/dashboard/blogs"}
             onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
@@ -86,9 +84,9 @@ function SideNav({ children }) {
           >
             <i className="fa-solid fa-file"></i>
             Blogs
-          </Link>
+          </a>
 
-          <Link
+          <a
             href={"/dashboard/notification"}
             onClick={(e) => setPageState(e.target.innerText.toLoweCase())}
             className={
@@ -105,9 +103,9 @@ function SideNav({ children }) {
               )}
             </div>
             Notification
-          </Link>
+          </a>
 
-          <Link
+          <a
             href={"/editor"}
             onClick={(e) => setPageState(e.target.innerText)}
             className={
@@ -117,12 +115,12 @@ function SideNav({ children }) {
           >
             <i className="fa-regular fa-pen-to-square"></i>
             Write
-          </Link>
+          </a>
 
           <h1 className="mt-20 text-xl text-gunmetal mb-3">SETTINGS</h1>
           <hr className="border-french-gray/60 -ml-6 mb-8 mr-6" />
 
-          <Link
+          <a
             href={"/settings/edit-profile"}
             onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
@@ -131,9 +129,9 @@ function SideNav({ children }) {
             }
           >
             <i className="fa-regular fa-user"></i> Edit Profile
-          </Link>
+          </a>
 
-          <Link
+          <a
             href={"/settings/change-password"}
             onClick={(e) => setPageState(e.target.innerText.toLowerCase())}
             className={
@@ -142,7 +140,7 @@ function SideNav({ children }) {
             }
           >
             <i className="fa-solid fa-lock"></i> Change Password
-          </Link>
+          </a>
         </div>
       </div>
 
