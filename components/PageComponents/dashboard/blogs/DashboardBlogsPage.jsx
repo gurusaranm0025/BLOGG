@@ -10,7 +10,10 @@ import {
   ManagePublishedBlogsCard,
 } from "@/components/ManageBlogs/ManagePublishedBlogsCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { getUserWrittenBlogs } from "@/server/fetchBlogs";
+
+// import { getUserWrittenBlogs } from "@/server/fetchBlogs";
+import axios from "axios";
+
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -29,14 +32,24 @@ function DashBoardBlogsPage() {
   console.log("active Tab : ", activeTab);
 
   function getBlogs({ page, draft, deletedDocCount = 0 }) {
-    getUserWrittenBlogs({
-      token: access_token,
-      query,
-      page,
-      draft,
-      deletedDocCount,
-    })
-      .then(async (data) => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getUserWrittenBlogs",
+        {
+          query,
+          page,
+          draft,
+          deletedDocCount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
+      .then(async ({ data }) => {
+        console.log("data =>", data);
         let formattedData = await filterPaginationData({
           state: draft ? drafts : blogs,
           data: data.blogs,
@@ -45,7 +58,7 @@ function DashBoardBlogsPage() {
           dataToSend: { user: access_token, draft, query },
         });
 
-        console.log("draft => " + draft, formattedData);
+        // console.log("draft => " + draft, formattedData);
 
         if (draft) {
           setDrafts(formattedData);
@@ -56,6 +69,36 @@ function DashBoardBlogsPage() {
       .catch((err) => {
         console.error(err.message);
       });
+
+    //old code
+    // getUserWrittenBlogs({
+    //   token: access_token,
+    //   query,
+    //   page,
+    //   draft,
+    //   deletedDocCount,
+    // })
+    //   .then(async (data) => {
+    //     console.log("data =>", data);
+    //     let formattedData = await filterPaginationData({
+    //       state: draft ? drafts : blogs,
+    //       data: data.blogs,
+    //       page,
+    //       route: "user-written-blogs-count",
+    //       dataToSend: { user: access_token, draft, query },
+    //     });
+
+    //     console.log("draft => " + draft, formattedData);
+
+    //     if (draft) {
+    //       setDrafts(formattedData);
+    //     } else {
+    //       setBlogs(formattedData);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error(err.message);
+    //   });
   }
 
   useEffect(() => {

@@ -5,7 +5,9 @@ import PublishForm from "@/components/PublishForm/PublishForm";
 import { useParams, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
-import { getBlog } from "@/server/fetchBlogs";
+
+// import { getBlog } from "@/server/fetchBlogs";
+import axios from "axios";
 
 const blogStructure = {
   title: "",
@@ -36,8 +38,14 @@ function EditorPage() {
       return setLoading(false);
     }
 
-    getBlog({ blog_id, draft: true, mode: "edit" })
-      .then((data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getBlog", {
+        blog_id,
+        draft: true,
+        mode: "edit",
+      })
+      .then(({ data }) => {
         setBlog(data.blog);
         setLoading(false);
       })
@@ -46,6 +54,18 @@ function EditorPage() {
         setLoading(false);
         console.log(err.message);
       });
+
+    //old code
+    // getBlog({ blog_id, draft: true, mode: "edit" })
+    //   .then((data) => {
+    //     setBlog(data.blog);
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     setBlog(null);
+    //     setLoading(false);
+    //     console.log(err.message);
+    //   });
   }, []);
 
   return (

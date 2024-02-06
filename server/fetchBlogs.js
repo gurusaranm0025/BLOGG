@@ -765,6 +765,7 @@ export async function getUserWrittenBlogs({
   query,
   deletedDocCount,
 }) {
+  console.log("gub =>", token, page, draft, query, deletedDocCount, user_id);
   let user_id;
 
   let tokenResult = await tokenVerify({ token });

@@ -7,7 +7,10 @@ import NoData from "@/components/HomePage/NoData";
 import Loader from "@/components/Loader/Loader";
 import NotificationCard from "@/components/Notifications/NotificationCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { getNotifications } from "@/server/fetchBlogs";
+
+// import { getNotifications } from "@/server/fetchBlogs";
+import axios from "axios";
+
 import { useContext, useEffect, useState } from "react";
 
 function page() {
@@ -21,25 +24,51 @@ function page() {
   let [notifications, setNotifications] = useState(null);
 
   function fetchNotifications({ page, deletedDocCount = 0 }) {
-    getNotifications({
-      token: access_token,
-      page,
-      deletedDocCount,
-      filter,
-    }).then(async ({ notifications: data }) => {
-      console.log(data);
-      let formatedData = await filterPaginationData({
-        state: notifications,
-        data,
-        page,
-        route: "notifications",
-        dataToSend: { filter, user: access_token },
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getNotifications",
+        {
+          page,
+          deletedDocCount,
+          filter,
+        },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(async ({ data: response }) => {
+        let formatedData = await filterPaginationData({
+          state: notifications,
+          data: response.notifications,
+          page,
+          route: "notifications",
+          dataToSend: { filter, user: access_token },
+        });
+
+        // console.log("Formatted data : ", formatedData);
+
+        setNotifications(formatedData);
       });
 
-      console.log("Formatted data : ", formatedData);
+    //old code
+    // getNotifications({
+    //   token: access_token,
+    //   page,
+    //   deletedDocCount,
+    //   filter,
+    // }).then(async ({ notifications: data }) => {
+    //   console.log(data);
+    //   let formatedData = await filterPaginationData({
+    //     state: notifications,
+    //     data,
+    //     page,
+    //     route: "notifications",
+    //     dataToSend: { filter, user: access_token },
+    //   });
 
-      setNotifications(formatedData);
-    });
+    //   console.log("Formatted data : ", formatedData);
+
+    //   setNotifications(formatedData);
+    // });
   }
 
   useEffect(() => {

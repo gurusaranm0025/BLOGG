@@ -6,14 +6,21 @@ import maria from "@/public/maria_back.jpg";
 import Input from "@/components/signMethod/Input";
 import google from "@/public/google.svg";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { credValidityCheck, googleAuth } from "@/server/signActions";
-import { useContext, useState } from "react";
+
+// import { credValidityCheck, googleAuth } from "@/server/signActions";
+
+import { useContext, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
 import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import { useRouter } from "next/navigation";
 import { authWithGoogle } from "@/common/firebase";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
+
+//regex
+let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
+let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
 
 function SignMethodPage({ params }) {
   const router = useRouter();
@@ -25,35 +32,94 @@ function SignMethodPage({ params }) {
     setUserAuth,
   } = useContext(UserContext);
 
-  const [userCred, setUSerCreds] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  //new code
+  const authForm = useRef();
 
   async function signHandler(type = params.signMethod) {
-    const credResult = await credValidityCheck({
-      type: params.signMethod,
-      username: userCred.username ? userCred.username : "none",
-      email: userCred.email,
-      password: userCred.password,
-    });
+    ///new code
+    let form = new FormData(authForm.current);
 
-    if (credResult.status != 200) console.log(credResult);
+    let formData = {};
 
-    if (credResult.status == 500) {
-      toast.error("Sorry, an error occurred on our end");
-      console.log(credResult.error);
+    for (let [key, value] of form.entries()) {
+      formData[key] = value;
     }
 
-    //success
-    if (credResult.status === 200) {
-      toast.success("Success");
-      storeInSession("user", JSON.stringify(credResult));
-      setUserAuth(credResult);
-    } else {
-      toast.error(credResult.error);
+    let { username, email, password } = formData;
+
+    if (type == "signup") {
+      if (!username.length || username.length < 4) {
+        return toast.error(
+          "Enter username with a minimum of 4 characters to continue."
+        );
+      }
     }
+
+    if (!email.length || !emailRegex.test(email)) {
+      return toast.error("Email is invalid");
+    }
+
+    if (!password.length || !passwordRegex.test(password)) {
+      return toast.error(
+        "Password is invalid. Password must be 6 to 20 characters long with numbers and 1 lowercase and 1 uppercase letters."
+      );
+    }
+
+    formData["type"] = params.signMethod;
+
+    console.log("formdata =>", formData);
+
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/credValidityCheck",
+        formData
+      )
+      .then(({ data }) => {
+        console.log("data => ", data);
+
+        if (data.status == 500) {
+          console.log(data);
+          toast.error("Sorry, an error occurred on our end");
+          console.log(data.error);
+        }
+
+        //success
+        if (data.status === 200) {
+          toast.success("Success");
+          storeInSession("user", JSON.stringify(data));
+          setUserAuth(data);
+        } else {
+          toast.error(data.error);
+        }
+      })
+      .catch((response) => {
+        console.log("response =>", response);
+        toast.error("Trouble signing....");
+      });
+
+    //old code
+    // const credResult = await credValidityCheck({
+    //   type: params.signMethod,
+    //   username: userCred.username ? userCred.username : "none",
+    //   email: userCred.email,
+    //   password: userCred.password,
+    // });
+
+    // if (credResult.status != 200) console.log(credResult);
+
+    // if (credResult.status == 500) {
+    //   toast.error("Sorry, an error occurred on our end");
+    //   console.log(credResult.error);
+    // }
+
+    // //success
+    // if (credResult.status === 200) {
+    //   toast.success("Success");
+    //   storeInSession("user", JSON.stringify(credResult));
+    //   setUserAuth(credResult);
+    // } else {
+    //   toast.error(credResult.error);
+    // }
   }
 
   // access_token && router.push("/");
@@ -62,13 +128,28 @@ function SignMethodPage({ params }) {
     e.preventDefault();
     authWithGoogle()
       .then(async (user) => {
-        const credResult = await googleAuth(user.accessToken);
-        if (credResult.status === 200) {
-          storeInSession("user", JSON.stringify(credResult));
-          setUserAuth(credResult);
-        } else {
-          toast.error(credResult.error);
-        }
+        //new code
+        axios
+          .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/googleAuth", {
+            access_token: user.accessToken,
+          })
+          .then(({ data }) => {
+            if (data.status === 200) {
+              storeInSession("user", JSON.stringify(data));
+              setUserAuth(data);
+            } else {
+              toast.error(data.error);
+            }
+          });
+
+        //old code
+        // const credResult = await googleAuth(user.accessToken);
+        // if (credResult.status === 200) {
+        //   storeInSession("user", JSON.stringify(credResult));
+        //   setUserAuth(credResult);
+        // } else {
+        //   toast.error(credResult.error);
+        // }
       })
       .catch((err) => {
         toast.error("Trouble logging through google");
@@ -107,7 +188,10 @@ function SignMethodPage({ params }) {
             <Toaster />
 
             <div className="w-full md:w-[45vw] h-full flex flex-1 items-center justify-center md:items-start">
-              <form className="md:mt-[17vh] w-[85%] max-w-[500px] md:max-w-[450px] bg-white/75 outline-none outline-white/40 p-5 py-10 rounded-lg shadow-2xl shadow-black/60">
+              <form
+                ref={authForm}
+                className="md:mt-[17vh] w-[85%] max-w-[500px] md:max-w-[450px] bg-white/75 outline-none outline-white/40 p-5 py-10 rounded-lg shadow-2xl shadow-black/60"
+              >
                 <a href="/">
                   <Logo />
                 </a>

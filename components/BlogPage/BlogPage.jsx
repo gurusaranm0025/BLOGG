@@ -1,5 +1,7 @@
 "use client";
-import { getBlog, searchBlogs } from "@/server/fetchBlogs";
+
+// import { getBlog, searchBlogs } from "@/server/fetchBlogs";
+
 import { createContext, useEffect, useState } from "react";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import Loader from "../Loader/Loader";
@@ -10,6 +12,7 @@ import BlogContent from "./BlogContent";
 import CommentsContainer, {
   fetchComments,
 } from "../Comments/CommentsContainer";
+import axios from "axios";
 
 export const blogStructure = {
   title: "",
@@ -45,8 +48,12 @@ function BlogPage({ blogId }) {
   } = blog;
 
   function fetchBlog() {
-    getBlog({ blog_id: blogId })
-      .then(async (data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getBlog", {
+        blog_id: blogId,
+      })
+      .then(async ({ data }) => {
         data.blog.comments = await fetchComments({
           blog_id: data.blog._id,
           setParentCommentCountFun: setTotalParentCommentsLoaded,
@@ -55,22 +62,63 @@ function BlogPage({ blogId }) {
         setBlog(data.blog);
 
         setLoading(false);
-        searchBlogs({
-          tag: blog.tags[0],
-          limit: 6,
-          eliminate_blog: data.blog_id,
-        })
-          .then((response) => {
+
+        //old code
+        // searchBlogs(
+        //   {
+        //   tag: blog.tags[0],
+        //   limit: 6,
+        //   eliminate_blog: data.blog_id,
+        // }
+        // );
+
+        axios
+          .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
+            tag: blog.tags[0],
+            limit: 6,
+            eliminate_blog: data.blog_id,
+          })
+          .then(({ data: response }) => {
             console.log(response.blogs);
             setSimilarBlogs(response.blogs);
           })
           .catch((err) => {
-            console.log(err.message);
+            console.error(err);
           });
       })
       .catch((err) => {
-        console.log(err.message);
+        console.error(err);
       });
+
+    //old code
+    // getBlog({ blog_id: blogId })
+    //   .then(async (data) => {
+
+    // data.blog.comments = await fetchComments({
+    //   blog_id: data.blog._id,
+    //   setParentCommentCountFun: setTotalParentCommentsLoaded,
+    // });
+
+    // setBlog(data.blog);
+
+    // setLoading(false);
+    // searchBlogs({
+    //   tag: blog.tags[0],
+    //   limit: 6,
+    //   eliminate_blog: data.blog_id,
+    // })
+    //   .then((response) => {
+    //     console.log(response.blogs);
+    //     setSimilarBlogs(response.blogs);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
+
+    //   })
+    // .catch((err) => {
+    //   console.log(err.message);
+    // });
   }
 
   useEffect(() => {

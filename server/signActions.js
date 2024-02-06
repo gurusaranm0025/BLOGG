@@ -43,8 +43,6 @@ async function generateUsername(email) {
 
 //format data to send
 function formatDataToSend(user) {
-  console.log("format data");
-  console.log(user);
   const access_token = jwt.sign(
     { id: user._id },
     process.env.SECRET_ACCESS_KEY
