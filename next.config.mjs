@@ -4,7 +4,6 @@ import million from "million/compiler";
 const nextConfig = {
   reactStrictMode: false,
   trailingSlash: true,
-  output: 'export'
   
 };
 
