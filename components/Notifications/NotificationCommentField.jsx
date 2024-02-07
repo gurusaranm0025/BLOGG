@@ -1,5 +1,6 @@
 import { UserContext } from "@/common/ContextProvider";
-import { addComment } from "@/server/fetchBlogs";
+// import { addComment } from "@/server/fetchBlogs";
+import axios from "axios";
 import { useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -31,14 +32,14 @@ function NotificationCommentField({
       return toast.error("Write something to comment.");
     }
 
-    addComment({
-      token: access_token,
-      _id,
-      blog_author: user_id,
-      comment,
-      replying_to: replyingTo,
-    })
-      .then((response) => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/addComment",
+        { _id, blog_author: user_id, comment, replying_to: replyingTo },
+        { headers: { Authorization: `bearer ${access_token}` } }
+      )
+      .then(({ data: response }) => {
         setReplying(false);
 
         results[index].reply = { comment, _id: response._id };
@@ -48,6 +49,25 @@ function NotificationCommentField({
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    //   addComment({
+    //     token: access_token,
+    //     _id,
+    //     blog_author: user_id,
+    //     comment,
+    //     replying_to: replyingTo,
+    //   })
+    //     .then((response) => {
+    //       setReplying(false);
+
+    //       results[index].reply = { comment, _id: response._id };
+
+    //       setNotifications({ ...notifications, results });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err.message);
+    //     });
   }
 
   return (

@@ -12,8 +12,11 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { ThemeContext, UserContext } from "@/common/ContextProvider";
 import UserNavigationPanel from "./UserNavigationPanel";
 import { useRouter } from "next/navigation";
-import { newNotification } from "@/server/fetchBlogs";
+
+// import { newNotification } from "@/server/fetchBlogs";
+
 import { storeInSession } from "@/common/session";
+import axios from "axios";
 
 function NavBar({ className }) {
   const router = useRouter();
@@ -30,12 +33,23 @@ function NavBar({ className }) {
 
   useEffect(() => {
     if (access_token) {
-      newNotification({ token: access_token }).then(
-        ({ new_notification_available }) => {
+      //new code
+      axios
+        .post(
+          process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/newNotifications",
+          {},
+          { headers: { Authorization: `Bearer ${access_token}` } }
+        )
+        .then(({ data: { new_notification_available } }) => {
           setUserAuth({ ...userAuth, new_notification_available });
-          ``;
-        }
-      );
+        });
+
+      //old code
+      // newNotification({ token: access_token }).then(
+      //   ({ new_notification_available }) => {
+      //     setUserAuth({ ...userAuth, new_notification_available });
+      //   }
+      // );
     }
   }, [access_token]);
 

@@ -4,9 +4,12 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useContext } from "react";
 import { EditorContext } from "../Editor/EditorPage";
 import Tags from "./Tags";
-import { createBlog } from "@/server/publishBlog";
+
+// import { createBlog } from "@/server/publishBlog";
+
 import { UserContext } from "@/common/ContextProvider";
 import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
 
 function PublishForm() {
   const router = useRouter();
@@ -67,18 +70,21 @@ function PublishForm() {
 
     let blogObj = { title, des, banner, content, tags, draft: false };
 
-    createBlog(access_token, {
-      ...blogObj,
-      id: blog_id,
-    })
-      .then((response) => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/createBlog",
+        { blogContent: { ...blogObj, id: blog_id } },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data }) => {
         e.target.classList.remove("disable");
 
         toast.dismiss(loadingToast);
 
-        if (response.status == 500) {
-          console.error(response.error);
-          toast.error(response.message);
+        if (data.status == 500) {
+          console.error(data.error);
+          toast.error(data.message);
         } else {
           setTimeout(() => {
             router.push("/dashboard/blogs"), 500;
@@ -91,6 +97,32 @@ function PublishForm() {
         toast.error("failed");
         console.log(err.message);
       });
+
+    //old code
+    // createBlog(access_token, {
+    //   ...blogObj,
+    //   id: blog_id,
+    // })
+    //   .then((response) => {
+    //     e.target.classList.remove("disable");
+
+    //     toast.dismiss(loadingToast);
+
+    //     if (response.status == 500) {
+    //       console.error(response.error);
+    //       toast.error(response.message);
+    //     } else {
+    //       setTimeout(() => {
+    //         router.push("/dashboard/blogs"), 500;
+    //       });
+    //       toast.success("Published successfully");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     toast.dismiss(loadingToast);
+    //     toast.error("failed");
+    //     console.log(err.message);
+    //   });
   }
 
   return (

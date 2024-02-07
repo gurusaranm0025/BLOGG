@@ -3,7 +3,9 @@ import { useContext, useEffect } from "react";
 import { BlogContext } from "./BlogPage";
 import { UserContext } from "@/common/ContextProvider";
 import toast, { Toaster } from "react-hot-toast";
-import { getIsLikedByUser, likeBlog } from "@/server/fetchBlogs";
+
+// import { getIsLikedByUser, likeBlog } from "@/server/fetchBlogs";
+import axios from "axios";
 
 function BlogInteraction() {
   let {
@@ -31,8 +33,14 @@ function BlogInteraction() {
   useEffect(() => {
     if (access_token) {
       //make request to server to check whether the user has liked the post or not
-      getIsLikedByUser({ token: access_token, _id })
-        .then((data) => {
+      //new code
+      axios
+        .post(
+          process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getIsLikedByUser",
+          { _id },
+          { headers: { Authorization: `Bearer ${access_token}` } }
+        )
+        .then(({ data }) => {
           if (data.status == 200) {
             setIsLikedByUser(Boolean(data.result));
           }
@@ -40,6 +48,17 @@ function BlogInteraction() {
         .catch((err) => {
           console.log(err.message);
         });
+
+      //old code
+      // getIsLikedByUser({ token: access_token, _id })
+      //   .then((data) => {
+      //     if (data.status == 200) {
+      //       setIsLikedByUser(Boolean(data.result));
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.message);
+      //   });
     }
   }, []);
 
@@ -50,9 +69,21 @@ function BlogInteraction() {
       !isLikedByUser ? total_likes++ : total_likes--;
       setBlog({ ...blog, activity: { ...activity, total_likes } });
 
-      likeBlog({ token: access_token, _id, isLikedByUser }).then((data) =>
-        console.log(data)
-      );
+      //new code
+      axios
+        .post(
+          process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/likeBlog",
+          { _id, isLikedByUser },
+          { headers: { Authorization: `Bearer ${access_token}` } }
+        )
+        .then(({ data }) => {
+          console.log(data);
+        });
+
+      //old code
+      // likeBlog({ token: access_token, _id, isLikedByUser }).then((data) =>
+      //   console.log(data)
+      // );
     } else {
       //not logged in
       toast.error("Sign in to like this blog");

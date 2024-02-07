@@ -2,7 +2,9 @@ import { getDay } from "../HomePage/BlogPostCard/date";
 import { useContext, useState } from "react";
 import NotificationCommentField from "./NotificationCommentField";
 import { UserContext } from "@/common/ContextProvider";
-import { deleteComment } from "@/server/fetchBlogs";
+
+// import { deleteComment } from "@/server/fetchBlogs";
+import axios from "axios";
 
 function NotificationCard({ data, index, notificationState }) {
   let [isReplying, setIsReplying] = useState(false);
@@ -40,9 +42,14 @@ function NotificationCard({ data, index, notificationState }) {
 
   function handleDelete(comment_id, type, target) {
     target.setAttribute("disabled", true);
-
-    deleteComment({ token: access_token, _id: comment_id })
-      .then(() => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/deleteComment",
+        { _id: comment_id },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data }) => {
         if (type == "comment") {
           results.splice(index, 1);
         } else {
@@ -60,6 +67,27 @@ function NotificationCard({ data, index, notificationState }) {
       .catch((err) => {
         console.error(err.message);
       });
+
+    //old code
+    // deleteComment({ token: access_token, _id: comment_id })
+    //   .then(() => {
+    //     if (type == "comment") {
+    //       results.splice(index, 1);
+    //     } else {
+    //       delete results[index].reply;
+    //     }
+
+    //     target.removeAttribute("disabled");
+    //     setNotifications({
+    //       ...notifications,
+    //       results,
+    //       totalDocs: totalDocs - 1,
+    //       deleteDocCount: notifications.deleteDocCount + 1,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.error(err.message);
+    //   });
   }
 
   return (

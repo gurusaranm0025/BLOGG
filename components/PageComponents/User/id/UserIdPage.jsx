@@ -8,9 +8,11 @@ import InPageNavigation from "@/components/HomePage/InPageNavigation";
 import LoadMoreDataBtn from "@/components/HomePage/LoadMoreDataBtn";
 import NoData from "@/components/HomePage/NoData";
 import Loader from "@/components/Loader/Loader";
-import NavBar from "@/components/NavBar/NavBar";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { getUserProfile, searchBlogs } from "@/server/fetchBlogs";
+
+// import { getUserProfile, searchBlogs } from "@/server/fetchBlogs";
+import axios from "axios";
+
 import { useContext, useEffect, useState } from "react";
 
 export const profileDataStructure = {
@@ -48,8 +50,12 @@ function UserIdPage({ params }) {
   } = profile;
 
   function fetchUserProfile() {
-    getUserProfile({ username: profileId })
-      .then((data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getUserProfile", {
+        username: profileId,
+      })
+      .then(({ data }) => {
         if (data.user != null) {
           setProfile(data.user);
           getBlogs({ createNewArr: true, user_id: data.user._id });
@@ -60,23 +66,56 @@ function UserIdPage({ params }) {
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // getUserProfile({ username: profileId })
+    //   .then((data) => {
+    //     if (data.user != null) {
+    //       setProfile(data.user);
+    //       getBlogs({ createNewArr: true, user_id: data.user._id });
+    //     }
+    //     setProfileLoaded(profileId);
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   function getBlogs({ page = 1, user_id }) {
     user_id = user_id == undefined ? blogs.user_id : user_id;
-
-    searchBlogs({ author: user_id, page: page }).then(async (data) => {
-      let formatData = await filterPaginationData({
-        state: blogs,
-        data: data.blogs,
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
+        author: user_id,
         page: page,
-        route: "author",
-        dataToSend: { author: user_id },
+      })
+      .then(async ({ data }) => {
+        let formatData = await filterPaginationData({
+          state: blogs,
+          data: data.blogs,
+          page: page,
+          route: "author",
+          dataToSend: { author: user_id },
+        });
+
+        formatData.user_id = user_id;
+        setBlogs(formatData);
       });
 
-      formatData.user_id = user_id;
-      setBlogs(formatData);
-    });
+    //old code
+    // searchBlogs({ author: user_id, page: page }).then(async (data) => {
+    //   let formatData = await filterPaginationData({
+    //     state: blogs,
+    //     data: data.blogs,
+    //     page: page,
+    //     route: "author",
+    //     dataToSend: { author: user_id },
+    //   });
+
+    //   formatData.user_id = user_id;
+    //   setBlogs(formatData);
+    // });
   }
 
   useEffect(() => {
@@ -98,7 +137,6 @@ function UserIdPage({ params }) {
 
   return (
     <AnimationWrapper>
-      <NavBar />
       {loading ? (
         <Loader />
       ) : profileUsername.length ? (

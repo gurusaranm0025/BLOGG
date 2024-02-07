@@ -2,7 +2,9 @@
 import { getDay } from "../HomePage/BlogPostCard/date";
 import { useContext, useState } from "react";
 import { UserContext } from "@/common/ContextProvider";
-import { deleteBlog } from "@/server/fetchBlogs";
+
+// import { deleteBlog } from "@/server/fetchBlogs";
+import axios from "axios";
 
 function BlogStats({ stats }) {
   return (
@@ -146,9 +148,14 @@ function deleteBlogFunc({ blog, access_token, target }) {
   let { index, blog_id, setStateFunc } = blog;
 
   target.setAttribute("disabled", true);
-
-  deleteBlog({ token: access_token, blog_id })
-    .then((data) => {
+  //new code
+  axios
+    .post(
+      process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/deleteBlog",
+      { blog_id },
+      { headers: { Authorization: `Bearer ${access_token}` } }
+    )
+    .then(({ data }) => {
       target.removeAttribute("disabled");
 
       setStateFunc((preVal) => {
@@ -174,4 +181,33 @@ function deleteBlogFunc({ blog, access_token, target }) {
     .catch((err) => {
       console.error(err.message);
     });
+
+  //old code
+  // deleteBlog({ token: access_token, blog_id })
+  //   .then((data) => {
+  //     target.removeAttribute("disabled");
+
+  //     setStateFunc((preVal) => {
+  //       let { deletedDocCount, totalDocs, results } = preVal;
+
+  //       if (!deletedDocCount) {
+  //         deletedDocCount = 0;
+  //       }
+
+  //       results.splice(index, 1);
+
+  //       if (!results.length && totalDocs - 1 > 0) {
+  //         return null;
+  //       }
+
+  //       return {
+  //         ...preVal,
+  //         totalDocs: totalDocs - 1,
+  //         deletedDocCount: deletedDocCount + 1,
+  //       };
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.error(err.message);
+  //   });
 }

@@ -7,10 +7,13 @@ import { uploadImage } from "@/components/ImageUpload/uploadImage";
 import Loader from "@/components/Loader/Loader";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import Input from "@/components/signMethod/Input";
-import { getUserProfile } from "@/server/fetchBlogs";
-import { updateProfile, updateProfileImage } from "@/server/signActions";
+
+// import { getUserProfile } from "@/server/fetchBlogs";
+// import { updateProfile, updateProfileImage } from "@/server/signActions";
+
 import { useContext, useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function page() {
   let bioLimit = 150;
@@ -49,14 +52,28 @@ function page() {
 
   useEffect(() => {
     if (access_token) {
-      getUserProfile({ username })
-        .then((response) => {
+      //new code
+      axios
+        .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getUserProfile", {
+          username,
+        })
+        .then(({ data }) => {
           setLoading(false);
-          setProfile(response.user);
+          setProfile(data.user);
         })
         .catch((err) => {
           console.log(err.message);
         });
+
+      //old code
+      // getUserProfile({ username })
+      //   .then((response) => {
+      //     setLoading(false);
+      //     setProfile(response.user);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.message);
+      //   });
     }
   }, [access_token]);
 
@@ -78,8 +95,14 @@ function page() {
       uploadImage(updatedProfileImg, profile_username)
         .then((url) => {
           if (url) {
-            updateProfileImage({ token: access_token, url: url.url })
-              .then((data) => {
+            //new code
+            axios
+              .post(
+                process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/updateProfileImage",
+                { url: url.url },
+                { headers: { Authorization: `Bearer ${access_token}` } }
+              )
+              .then(({ data }) => {
                 let newUserAuth = {
                   ...userAuth,
                   profile_img: data.profile_img,
@@ -102,6 +125,32 @@ function page() {
                   "Error occurred while updating the profile image"
                 );
               });
+
+            //old code
+            // updateProfileImage({ token: access_token, url: url.url })
+            //   .then((data) => {
+            //     let newUserAuth = {
+            //       ...userAuth,
+            //       profile_img: data.profile_img,
+            //     };
+
+            //     storeInSession("user", JSON.stringify(newUserAuth));
+
+            //     setUserAuth(newUserAuth);
+
+            //     setUpdatedProfileImg(null);
+            //     toast.dismiss(loadingToast);
+            //     toast.success("Updated.");
+            //     e.target.removeAttribute("disabled");
+            //   })
+            // .catch((err) => {
+            //   e.target.removeAttribute("disabled");
+            //   console.error(err.message);
+            //   toast.dismiss(loadingToast);
+            //   return toast.error(
+            //     "Error occurred while updating the profile image"
+            //   );
+            // });
           }
         })
         .catch((err) => {
@@ -148,16 +197,28 @@ function page() {
 
     e.target.setAttribute("disabled", true);
 
-    updateProfile({
-      token: access_token,
-      username,
-      bio,
-      social_links: { youtube, facebook, twitter, github, instagram, website },
-    })
-      .then((response) => {
-        if (response.status == 200) {
-          if (userAuth.username != response.username) {
-            let newUserAuth = { ...userAuth, username: response.username };
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/updateProfile",
+        {
+          username,
+          bio,
+          social_links: {
+            youtube,
+            facebook,
+            twitter,
+            github,
+            instagram,
+            website,
+          },
+        },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data }) => {
+        if (data.status == 200) {
+          if (userAuth.username != data.username) {
+            let newUserAuth = { ...userAuth, username: data.username };
 
             storeInSession("user", JSON.stringify(newUserAuth));
             setUserAuth(newUserAuth);
@@ -169,9 +230,9 @@ function page() {
           return toast.success("Profile Updated successfully");
         } else {
           toast.dismiss(loadingToast);
-          console.log(response.error);
+          console.log(data.error);
           e.target.removeAttribute("disabled");
-          return toast.error(response.message);
+          return toast.error(data.message);
         }
       })
       .catch((err) => {
@@ -180,6 +241,40 @@ function page() {
         toast.dismiss(loadingToast);
         return toast.error("Error occurred while updating your profile");
       });
+
+    //old code
+    // updateProfile({
+    //   token: access_token,
+    //   username,
+    //   bio,
+    //   social_links: { youtube, facebook, twitter, github, instagram, website },
+    // })
+    //   .then((response) => {
+    //     if (response.status == 200) {
+    //       if (userAuth.username != response.username) {
+    //         let newUserAuth = { ...userAuth, username: response.username };
+
+    //         storeInSession("user", JSON.stringify(newUserAuth));
+    //         setUserAuth(newUserAuth);
+    //       }
+
+    //       toast.dismiss(loadingToast);
+
+    //       e.target.removeAttribute("disabled");
+    //       return toast.success("Profile Updated successfully");
+    //     } else {
+    //       toast.dismiss(loadingToast);
+    //       console.log(response.error);
+    //       e.target.removeAttribute("disabled");
+    //       return toast.error(response.message);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     e.target.removeAttribute("disabled");
+    //     toast.dismiss(loadingToast);
+    //     return toast.error("Error occurred while updating your profile");
+    //   });
   }
 
   return (

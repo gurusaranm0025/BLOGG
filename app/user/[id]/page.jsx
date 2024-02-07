@@ -1,7 +1,7 @@
 import UserIdPage from "@/components/PageComponents/User/id/UserIdPage";
 
 export async function generateStaticParams() {
-  return [];
+  return [{}];
 }
 
 function page({ params }) {

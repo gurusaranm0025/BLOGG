@@ -5,10 +5,12 @@ import InPageNavigation from "@/components/HomePage/InPageNavigation";
 import LoadMoreDataBtn from "@/components/HomePage/LoadMoreDataBtn";
 import NoData from "@/components/HomePage/NoData";
 import Loader from "@/components/Loader/Loader";
-import NavBar from "@/components/NavBar/NavBar";
 import UserCard from "@/components/SearchPage/UserCard";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-import { searchBlogs, searchUsers } from "@/server/fetchBlogs";
+
+// import { searchBlogs, searchUsers } from "@/server/fetchBlogs";
+import axios from "axios";
+
 import { useEffect, useState } from "react";
 
 function page({ params }) {
@@ -17,23 +19,45 @@ function page({ params }) {
   let [users, setUsers] = useState(null);
 
   function searchBlogsByQuery({ page = 1, createNewArr = false }) {
-    searchBlogs({ query: query, page }).then(async (data) => {
-      let formatData = await filterPaginationData({
-        createNewArr,
-        state: blogs,
-        data: data.blogs,
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
+        query: query,
         page,
-        route: "searchByQuery",
-        dataToSend: { query },
+      })
+      .then(async ({ data }) => {
+        let formatData = await filterPaginationData({
+          createNewArr,
+          state: blogs,
+          data: data.blogs,
+          page,
+          route: "searchByQuery",
+          dataToSend: { query },
+        });
+
+        setBlogs(formatData);
       });
 
-      setBlogs(formatData);
-    });
+    //old code
+    // searchBlogs({ query: query, page }).then(async (data) => {
+    //   let formatData = await filterPaginationData({
+    //     createNewArr,
+    //     state: blogs,
+    //     data: data.blogs,
+    //     page,
+    //     route: "searchByQuery",
+    //     dataToSend: { query },
+    //   });
+
+    //   setBlogs(formatData);
+    // });
   }
 
   function getUsers() {
-    searchUsers({ query })
-      .then((data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchUsers", { query })
+      .then(({ data }) => {
         if (data.status == 200) {
           setUsers(data.users);
         } else {
@@ -43,6 +67,19 @@ function page({ params }) {
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // searchUsers({ query })
+    //   .then((data) => {
+    //     if (data.status == 200) {
+    //       setUsers(data.users);
+    //     } else {
+    //       console.error(data.error);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   function resetState() {

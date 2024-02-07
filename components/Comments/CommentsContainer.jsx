@@ -2,10 +2,13 @@ import { useContext } from "react";
 import { BlogContext } from "../BlogPage/BlogPage";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import CommentField from "./CommentField";
-import { getBlogComments } from "@/server/fetchBlogs";
+
+// import { getBlogComments } from "@/server/fetchBlogs";
+
 import NoData from "../HomePage/NoData";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import CommentCard from "./CommentCard";
+import axios from "axios";
 
 export async function fetchComments({
   skip = 0,
@@ -14,20 +17,40 @@ export async function fetchComments({
   comment_array = null,
 }) {
   let res;
+  //new code
+  await axios
+    .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getBlogComments", {
+      blog_id,
+      skip,
+    })
+    .then(({ data }) => {
+      data.comments.map((comment) => {
+        comment.childrenLevel = 0;
+      });
 
-  await getBlogComments({ blog_id, skip }).then((data) => {
-    data.comments.map((comment) => {
-      comment.childrenLevel = 0;
+      setParentCommentCountFun((preVal) => data.comments.length);
+
+      if (comment_array == null) {
+        res = { results: data.comments };
+      } else {
+        res = { results: [...comment_array, ...data.comments] };
+      }
     });
 
-    setParentCommentCountFun((preVal) => data.comments.length);
+  //old code
+  // await getBlogComments({ blog_id, skip }).then((data) => {
+  //   data.comments.map((comment) => {
+  //     comment.childrenLevel = 0;
+  //   });
 
-    if (comment_array == null) {
-      res = { results: data.comments };
-    } else {
-      res = { results: [...comment_array, ...data.comments] };
-    }
-  });
+  //   setParentCommentCountFun((preVal) => data.comments.length);
+
+  //   if (comment_array == null) {
+  //     res = { results: data.comments };
+  //   } else {
+  //     res = { results: [...comment_array, ...data.comments] };
+  //   }
+  // });
 
   return res;
 }

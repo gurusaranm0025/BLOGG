@@ -1,9 +1,12 @@
 "use client";
 import { UserContext } from "@/common/ContextProvider";
-import { addComment } from "@/server/fetchBlogs";
+
+// import { addComment } from "@/server/fetchBlogs";
+
 import { useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BlogContext } from "../BlogPage/BlogPage";
+import axios from "axios";
 
 function CommentField({
   action,
@@ -37,15 +40,14 @@ function CommentField({
     if (!comment.length) {
       return toast.error("Write something to comment.");
     }
-
-    addComment({
-      token: access_token,
-      _id,
-      blog_author,
-      comment,
-      replying_to: replyingTo,
-    })
-      .then((response) => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/addComment",
+        { _id, blog_author, comment, replying_to: replyingTo },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data: response }) => {
         setComment("");
         response.commented_by = {
           personal_info: { username, fullname, profile_img },
@@ -90,7 +92,63 @@ function CommentField({
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // addComment({
+    //   token: access_token,
+    //   _id,
+    //   blog_author,
+    //   comment,
+    //   replying_to: replyingTo,
+    // })
+    //   .then((response) => {
+    //     setComment("");
+    //     response.commented_by = {
+    //       personal_info: { username, fullname, profile_img },
+    //     };
+
+    //     let newCommentArr;
+
+    //     if (replyingTo) {
+    //       commentsArr[index].children.push(response._id);
+    //       response.childrenLevel = commentsArr[index].childrenLevel + 1;
+    //       response.parentIndex = index;
+    //       commentsArr[index].isReplyLoaded = true;
+
+    //       commentsArr.splice(index + 1, 0, response);
+
+    //       newCommentArr = commentsArr;
+
+    //       setReplying(false);
+    //     } else {
+    //       response.childrenLevel = 0;
+
+    //       newCommentArr = [response, ...commentsArr];
+    //     }
+
+    //     let parentCommentIncrementVal = replyingTo ? 0 : 1;
+
+    //     setBlog({
+    //       ...blog,
+    //       comments: { ...comments, results: newCommentArr },
+    //       activity: {
+    //         ...activity,
+    //         total_comments: total_comments + 1,
+    //         total_parent_comments:
+    //           total_parent_comments + parentCommentIncrementVal,
+    //       },
+    //     });
+
+    //     setTotalParentCommentsLoaded(
+    //       (preVal) => preVal + parentCommentIncrementVal
+    //     );
+
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
+
   return (
     <>
       <Toaster />

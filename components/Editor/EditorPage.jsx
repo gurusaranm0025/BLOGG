@@ -34,26 +34,26 @@ function EditorPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    //new code
     if (!blog_id) {
       return setLoading(false);
+    } else {
+      axios
+        .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getBlog", {
+          blog_id,
+          draft: true,
+          mode: "edit",
+        })
+        .then(({ data }) => {
+          setBlog(data.blog);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setBlog(null);
+          setLoading(false);
+          console.log(err.message);
+        });
     }
-
-    //new code
-    axios
-      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getBlog", {
-        blog_id,
-        draft: true,
-        mode: "edit",
-      })
-      .then(({ data }) => {
-        setBlog(data.blog);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setBlog(null);
-        setLoading(false);
-        console.log(err.message);
-      });
 
     //old code
     // getBlog({ blog_id, draft: true, mode: "edit" })

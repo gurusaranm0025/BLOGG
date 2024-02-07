@@ -4,10 +4,10 @@ import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import ImageUpload from "./ImageUpload";
 import { EditorContext } from "../Editor/EditorPage";
 import toast, { Toaster } from "react-hot-toast";
-import { ThemeContext, UserContext } from "@/common/ContextProvider";
-import { createBlog } from "@/server/publishBlog";
+import { UserContext } from "@/common/ContextProvider";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import axios from "axios";
 
 let CustomEditor = dynamic(() => import("./CustomEditor"), { ssr: false });
 
@@ -26,8 +26,6 @@ function BlogEditor() {
     userAuth: { access_token },
   } = useContext(UserContext);
 
-  let { theme, setTheme } = useContext(ThemeContext);
-
   let { blog_id } = useParams();
 
   function handleTitleKeyDown(e) {
@@ -42,10 +40,6 @@ function BlogEditor() {
   }
 
   function PublishHandler() {
-    // if (!banner.length) {
-    //   return toast.error("Upload a blog banner to publish it.");
-    // }
-
     if (!title.length) {
       toast.error("Give your blog a title to publish it..");
     }
@@ -85,28 +79,43 @@ function BlogEditor() {
           draft: true,
         };
 
-        const result = await createBlog(access_token, {
-          ...blogObj,
-          id: blog_id,
-        }).catch((err) => {
-          toast.error("failed");
-          console.log(err.message);
-        });
+        //new code
+        axios
+          .post(
+            process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/createBlog",
+            {
+              blogContent: {
+                ...blogObj,
+                id: blog_id,
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          )
+          .then(({ data }) => {
+            toast.dismiss(loadingToast);
 
-        console.log(result);
+            if (data.status == 500) {
+              console.error(data.error);
+              toast.error(data.message);
+            } else {
+              setTimeout(() => {
+                router.push("/dashboard/blogs?tab=draft"), 500;
+              });
+              toast.success("Draft Saved");
+            }
+          })
+          .catch((err) => {
+            toast.dismiss(loadingToast);
 
-        toast.dismiss(loadingToast);
-        e.target.classList.remove("disable");
-
-        if (result.status == 500) {
-          console.error(result.error);
-          toast.error(result.message);
-        } else {
-          setTimeout(() => {
-            router.push("/dashboard/blogs?tab=draft"), 500;
+            toast.error("failed");
+            console.log(err.message);
           });
-          toast.success("Draft Saved");
-        }
+
+        e.target.classList.remove("disable");
       });
     }
   }

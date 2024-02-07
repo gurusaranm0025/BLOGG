@@ -2,7 +2,10 @@
 import { UserContext } from "@/common/ContextProvider";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
 import Input from "@/components/signMethod/Input";
-import { changePassword } from "@/server/signActions";
+
+// import { changePassword } from "@/server/signActions";
+import axios from "axios";
+
 import { useContext, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -43,15 +46,21 @@ function page() {
 
     const loadingToast = toast.loading("Updating password...");
 
-    changePassword({ token: access_token, currentPassword, newPassword })
-      .then((response) => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/changePassword",
+        { currentPassword, newPassword },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data }) => {
         toast.dismiss(loadingToast);
 
-        if (response.status == 200) {
+        if (data.status == 200) {
           return toast.success("Updated your password");
         } else {
-          console.error(response.error);
-          return toast.error(response.message);
+          console.error(data.error);
+          return toast.error(data.message);
         }
       })
       .catch((err) => {
@@ -59,6 +68,24 @@ function page() {
         console.log(err.message);
         return toast.error("Error occurred while changing password");
       });
+
+    //old code
+    // changePassword({ token: access_token, currentPassword, newPassword })
+    //   .then((response) => {
+    //     toast.dismiss(loadingToast);
+
+    //     if (response.status == 200) {
+    //       return toast.success("Updated your password");
+    //     } else {
+    //       console.error(response.error);
+    //       return toast.error(response.message);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     toast.dismiss(loadingToast);
+    //     console.log(err.message);
+    //     return toast.error("Error occurred while changing password");
+    //   });
 
     e.target.removeAttribute("disabled");
   }

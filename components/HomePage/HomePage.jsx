@@ -2,16 +2,21 @@
 import { useEffect, useState } from "react";
 import AnimationWrapper from "../pageAnimation/AnimationWrapper";
 import InPageNavigation from "./InPageNavigation";
-import { getLatestBlogs, getTrendingBlogs } from "@/server/fetchBlogs";
+
+// import { getLatestBlogs, getTrendingBlogs } from "@/server/fetchBlogs";
+
 import Loader from "../Loader/Loader";
 import BlogPostCard from "./BlogPostCard/BlogPostCard";
 import MinimalBlogPost from "./BlogPostCard/MinimalBlogPost";
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
 import { activeTabRef } from "./InPageNavigation";
-import { searchBlogs } from "@/server/fetchBlogs";
+
+// import { searchBlogs } from "@/server/fetchBlogs";
+
 import NoData from "./NoData";
 import { filterPaginationData } from "./FilterPagination";
 import LoadMoreDataBtn from "./LoadMoreDataBtn";
+import axios from "axios";
 
 function HomePage() {
   let [blogs, setBlogs] = useState(null);
@@ -33,8 +38,10 @@ function HomePage() {
   ];
 
   function fetchLatestBlogs({ page = 1 }) {
-    getLatestBlogs(page)
-      .then(async (data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getLatestBlogs", { page })
+      .then(async ({ data }) => {
         let formatData = await filterPaginationData({
           state: blogs,
           data: data.blogs,
@@ -47,21 +54,53 @@ function HomePage() {
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // getLatestBlogs(page)
+    //   .then(async (data) => {
+    //     let formatData = await filterPaginationData({
+    //       state: blogs,
+    //       data: data.blogs,
+    //       route: "latest",
+    //       page,
+    //     });
+
+    //     setBlogs(formatData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   function fetchTrendingBlogs() {
-    getTrendingBlogs()
-      .then((data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getTrendingBlogs")
+      .then(({ data }) => {
         setTrendingBlogs(data.blogs);
       })
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // getTrendingBlogs()
+    //   .then((data) => {
+    //     setTrendingBlogs(data.blogs);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   function fetchBlogsByCategory({ page = 1 }) {
-    searchBlogs({ tag: pageState, page })
-      .then(async (data) => {
+    //new code
+    axios
+      .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
+        tag: pageState,
+        page,
+      })
+      .then(async ({ data }) => {
         if (data.status == 200) {
           let formatData = await filterPaginationData({
             state: blogs,
@@ -78,6 +117,26 @@ function HomePage() {
       .catch((err) => {
         console.log(err.message);
       });
+
+    //old code
+    // searchBlogs({ tag: pageState, page })
+    //   .then(async (data) => {
+    //     if (data.status == 200) {
+    //       let formatData = await filterPaginationData({
+    //         state: blogs,
+    //         data: data.blogs,
+    //         route: "category",
+    //         dataToSend: { tag: pageState },
+    //         page,
+    //       });
+    //       setBlogs(formatData);
+    //     } else {
+    //       console.log(data.error);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   useEffect(() => {

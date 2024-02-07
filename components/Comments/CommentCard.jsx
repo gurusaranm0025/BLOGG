@@ -2,10 +2,12 @@
 import { useContext, useState } from "react";
 import { getDay } from "../HomePage/BlogPostCard/date";
 import { UserContext } from "@/common/ContextProvider";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import CommentField from "./CommentField";
 import { BlogContext } from "../BlogPage/BlogPage";
-import { deleteComment, getReplies } from "@/server/fetchBlogs";
+
+// import { deleteComment, getReplies } from "@/server/fetchBlogs";
+import axios from "axios";
 
 function CommentCard({ index, leftVal, commentData }) {
   let {
@@ -119,20 +121,20 @@ function CommentCard({ index, leftVal, commentData }) {
   function handleLoadReplies({ skip = 0, currentIndex = index }) {
     if (commentsArr[currentIndex].children.length) {
       handleHideReplies();
-
-      getReplies({ _id: commentsArr[currentIndex]._id, skip })
-        .then((response) => {
+      //new code
+      axios
+        .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getReplies", {
+          _id: commentsArr[currentIndex]._id,
+          skip,
+        })
+        .then(({ data }) => {
           commentsArr[currentIndex].isReplyLoaded = true;
 
-          for (let i = 0; i < response.replies.length; i++) {
-            response.replies[i].childrenLevel =
+          for (let i = 0; i < data.replies.length; i++) {
+            data.replies[i].childrenLevel =
               commentsArr[currentIndex].childrenLevel + 1;
 
-            commentsArr.splice(
-              currentIndex + 1 + i + skip,
-              0,
-              response.replies[i]
-            );
+            commentsArr.splice(currentIndex + 1 + i + skip, 0, data.replies[i]);
           }
 
           setBlog({ ...blog, comments: { ...comments, results: commentsArr } });
@@ -140,14 +142,41 @@ function CommentCard({ index, leftVal, commentData }) {
         .catch((err) => {
           console.log(err.message);
         });
+
+      //old code
+      // getReplies({ _id: commentsArr[currentIndex]._id, skip })
+      //   .then((response) => {
+      //     commentsArr[currentIndex].isReplyLoaded = true;
+
+      //     for (let i = 0; i < response.replies.length; i++) {
+      //       response.replies[i].childrenLevel =
+      //         commentsArr[currentIndex].childrenLevel + 1;
+
+      //       commentsArr.splice(
+      //         currentIndex + 1 + i + skip,
+      //         0,
+      //         response.replies[i]
+      //       );
+      //     }
+
+      //     setBlog({ ...blog, comments: { ...comments, results: commentsArr } });
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.message);
+      //   });
     }
   }
 
   function handleDeleteComment(e) {
     e.target.setAttribute("disable", true);
-
-    deleteComment({ _id, token: access_token })
-      .then(() => {
+    //new code
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/deleteComment",
+        { _id },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      )
+      .then(({ data }) => {
         e.target.removeAttribute("disable");
         removeCommentCard(index + 1, true);
       })
@@ -155,7 +184,15 @@ function CommentCard({ index, leftVal, commentData }) {
         console.log(err.message);
       });
 
-    console.log("click");
+    //old code
+    // deleteComment({ _id, token: access_token })
+    //   .then(() => {
+    //     e.target.removeAttribute("disable");
+    //     removeCommentCard(index + 1, true);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   function LoadMoreRepliesBtn() {

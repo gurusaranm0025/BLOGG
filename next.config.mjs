@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
+import million from "million/compiler";
+
 const nextConfig = {
   reactStrictMode: false,
   trailingSlash: true,
-  // images: {
-  //   unoptimized: true,
-  // },
+  output: 'export'
+  
 };
 
-module.exports = nextConfig;
+export default million.next(nextConfig);
