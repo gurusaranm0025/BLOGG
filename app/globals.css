@@ -76,7 +76,7 @@
   }
 
   .sidebar-link {
-    @apply flex gap-4 items-center py-5 text-dark-grey hover:bg-rose-quartz/10 hover:text-black duration-300 md:rounded-tl-lg md:rounded-bl-lg -ml-6 pl-6 mb-1;
+    @apply flex gap-4 items-center py-5 text-dark-grey hover:bg-rose-quartz/10 hover:text-black duration-300 md:rounded-tl-lg md:rounded-bl-lg -ml-6 pl-6 mb-1 max-md:rounded-md;
   }
 
   .sidebar-link-active {

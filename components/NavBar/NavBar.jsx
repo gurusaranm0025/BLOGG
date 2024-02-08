@@ -122,7 +122,7 @@ function NavBar({ className }) {
         {access_token ? (
           <>
             <a href="/dashboard/notification">
-              <button className="w-12 h-12 bg-grey rounded-full relative hover:bg-french-gray/30 duration-300">
+              <button className="w-12 h-12 bg-grey rounded-full relative hover:bg-french-gray/30 duration-300 outline-none hover:outline-rose-quartz/30">
                 <BellIcon className="w-[1.5rem] block mx-auto my-auto" />
                 {new_notification_available ? (
                   <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
@@ -141,7 +141,7 @@ function NavBar({ className }) {
                 }, 200)
               }
             >
-              <button className="w-12 h-12 mr-1 mt-1 hover:opacity-70 duration-300">
+              <button className="w-12 h-12 mr-1 mt-1 hover:opacity-70 duration-300 outline-none hover:outline-rose-quartz/30 rounded-full">
                 <img
                   src={profile_img}
                   className="w-full h-full object-cover rounded-full"

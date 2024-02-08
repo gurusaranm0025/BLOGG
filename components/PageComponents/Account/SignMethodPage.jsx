@@ -6,9 +6,6 @@ import maria from "@/public/maria_back.jpg";
 import Input from "@/components/signMethod/Input";
 import google from "@/public/google.svg";
 import AnimationWrapper from "@/components/pageAnimation/AnimationWrapper";
-
-// import { credValidityCheck, googleAuth } from "@/server/signActions";
-
 import { useContext, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "@/common/session";
@@ -32,11 +29,9 @@ function SignMethodPage({ params }) {
     setUserAuth,
   } = useContext(UserContext);
 
-  //new code
   const authForm = useRef();
 
   async function signHandler(type = params.signMethod) {
-    ///new code
     let form = new FormData(authForm.current);
 
     let formData = {};
@@ -96,39 +91,12 @@ function SignMethodPage({ params }) {
         console.log("response =>", response);
         toast.error("Trouble signing....");
       });
-
-    //old code
-    // const credResult = await credValidityCheck({
-    //   type: params.signMethod,
-    //   username: userCred.username ? userCred.username : "none",
-    //   email: userCred.email,
-    //   password: userCred.password,
-    // });
-
-    // if (credResult.status != 200) console.log(credResult);
-
-    // if (credResult.status == 500) {
-    //   toast.error("Sorry, an error occurred on our end");
-    //   console.log(credResult.error);
-    // }
-
-    // //success
-    // if (credResult.status === 200) {
-    //   toast.success("Success");
-    //   storeInSession("user", JSON.stringify(credResult));
-    //   setUserAuth(credResult);
-    // } else {
-    //   toast.error(credResult.error);
-    // }
   }
-
-  // access_token && router.push("/");
 
   function handleGoogleAuth(e) {
     e.preventDefault();
     authWithGoogle()
       .then(async (user) => {
-        //new code
         axios
           .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/googleAuth", {
             access_token: user.accessToken,
@@ -141,15 +109,6 @@ function SignMethodPage({ params }) {
               toast.error(data.error);
             }
           });
-
-        //old code
-        // const credResult = await googleAuth(user.accessToken);
-        // if (credResult.status === 200) {
-        //   storeInSession("user", JSON.stringify(credResult));
-        //   setUserAuth(credResult);
-        // } else {
-        //   toast.error(credResult.error);
-        // }
       })
       .catch((err) => {
         toast.error("Trouble logging through google");
@@ -166,7 +125,6 @@ function SignMethodPage({ params }) {
 
     storeInSession("theme", newTheme);
   }
-  // className=" mt-[10px] ml-[10px] md:mt-[1vh] md:ml-[2vw]"
   return (
     <>
       {access_token ? (
