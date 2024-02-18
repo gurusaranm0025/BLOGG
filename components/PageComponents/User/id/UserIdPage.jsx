@@ -50,7 +50,6 @@ function UserIdPage({ params }) {
   } = profile;
 
   function fetchUserProfile() {
-    //new code
     axios
       .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getUserProfile", {
         username: profileId,
@@ -66,25 +65,10 @@ function UserIdPage({ params }) {
       .catch((err) => {
         console.log(err.message);
       });
-
-    //old code
-    // getUserProfile({ username: profileId })
-    //   .then((data) => {
-    //     if (data.user != null) {
-    //       setProfile(data.user);
-    //       getBlogs({ createNewArr: true, user_id: data.user._id });
-    //     }
-    //     setProfileLoaded(profileId);
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.message);
-    //   });
   }
 
   function getBlogs({ page = 1, user_id }) {
     user_id = user_id == undefined ? blogs.user_id : user_id;
-    //new code
     axios
       .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
         author: user_id,
@@ -102,20 +86,6 @@ function UserIdPage({ params }) {
         formatData.user_id = user_id;
         setBlogs(formatData);
       });
-
-    //old code
-    // searchBlogs({ author: user_id, page: page }).then(async (data) => {
-    //   let formatData = await filterPaginationData({
-    //     state: blogs,
-    //     data: data.blogs,
-    //     page: page,
-    //     route: "author",
-    //     dataToSend: { author: user_id },
-    //   });
-
-    //   formatData.user_id = user_id;
-    //   setBlogs(formatData);
-    // });
   }
 
   useEffect(() => {
@@ -186,24 +156,26 @@ function UserIdPage({ params }) {
               <>
                 {blogs == null ? (
                   <Loader />
-                ) : blogs.results.length ? (
-                  blogs.results.map((blog, i) => {
-                    return (
-                      <AnimationWrapper
-                        key={i}
-                        transition={{ duration: 1, delay: i * 0.1 }}
-                      >
-                        <BlogPostCard
-                          content={blog}
-                          author={blog.author.personal_info}
-                        />
-                        <LoadMoreDataBtn
-                          state={blogs}
-                          fetchDataFun={getBlogs}
-                        />
-                      </AnimationWrapper>
-                    );
-                  })
+                ) : blogs.results.length ? (<>
+                  {
+                    blogs.results.map((blog, i) => {
+                      return (
+                        <AnimationWrapper
+                          key={i}
+                          transition={{ duration: 1, delay: i * 0.1 }}
+                        >
+                          <BlogPostCard
+                            content={blog}
+                            author={blog.author.personal_info}
+                          />
+                        </AnimationWrapper>
+                      );
+                    })}
+                  <LoadMoreDataBtn
+                    state={blogs}
+                    fetchDataFun={getBlogs}
+                  />
+                </>
                 ) : (
                   <NoData message="No blogs have been published under this category" />
                 )}
