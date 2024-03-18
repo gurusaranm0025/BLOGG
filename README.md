@@ -34,6 +34,8 @@ This repo contains the frontend part of the project.
 
 ![Image](./markdownImages/bb_s.png)
 
+### Here's the link to the backend side of the app - [click here](https://github.com/gurusaranm0025/bloom-blogging-backend)
+
 ##### [Project Link](https://bloom-blogging.onrender.com) - I've hosted this web app on render under free plan so it will fall asleep if no one's accessing the server, if you are accessing the web app it may take some time to load for you depending on your network speed and your location.
 
 ##### I did my best to make it load faster.

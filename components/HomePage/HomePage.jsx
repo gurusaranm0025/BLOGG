@@ -38,7 +38,6 @@ function HomePage() {
   ];
 
   function fetchLatestBlogs({ page = 1 }) {
-    //new code
     axios
       .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getLatestBlogs", { page })
       .then(async ({ data }) => {
@@ -54,26 +53,9 @@ function HomePage() {
       .catch((err) => {
         console.log(err.message);
       });
-
-    //old code
-    // getLatestBlogs(page)
-    //   .then(async (data) => {
-    //     let formatData = await filterPaginationData({
-    //       state: blogs,
-    //       data: data.blogs,
-    //       route: "latest",
-    //       page,
-    //     });
-
-    //     setBlogs(formatData);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.message);
-    //   });
   }
 
   function fetchTrendingBlogs() {
-    //new code
     axios
       .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/getTrendingBlogs")
       .then(({ data }) => {
@@ -83,18 +65,9 @@ function HomePage() {
         console.log(err.message);
       });
 
-    //old code
-    // getTrendingBlogs()
-    //   .then((data) => {
-    //     setTrendingBlogs(data.blogs);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.message);
-    //   });
   }
 
   function fetchBlogsByCategory({ page = 1 }) {
-    //new code
     axios
       .post(process.env.NEXT_PUBLIC_SERVER_DOMAIN + "/searchBlogs", {
         tag: pageState,
@@ -118,25 +91,6 @@ function HomePage() {
         console.log(err.message);
       });
 
-    //old code
-    // searchBlogs({ tag: pageState, page })
-    //   .then(async (data) => {
-    //     if (data.status == 200) {
-    //       let formatData = await filterPaginationData({
-    //         state: blogs,
-    //         data: data.blogs,
-    //         route: "category",
-    //         dataToSend: { tag: pageState },
-    //         page,
-    //       });
-    //       setBlogs(formatData);
-    //     } else {
-    //       console.log(data.error);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.message);
-    //   });
   }
 
   useEffect(() => {
