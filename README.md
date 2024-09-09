@@ -20,7 +20,7 @@ This repo contains the frontend part of the project.
 
 <center>Home page</center>
 
-![Image](./markdownImages/base.png)
+![Image](./markdownImages/base.jpeg)
 
 <center>user profile page</center>
 
